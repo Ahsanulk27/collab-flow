@@ -18,7 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only src/app.ts",
     "build": "tsc",
-    "start": "cross-env NODE_ENV=production node dist/app.js",
+    "start": "cross-env NODE_ENV=production node dist/src/app.js",
     "prisma:migrate:dev": "dotenv -e .env -e .env.development -- npx prisma migrate dev",
     "prisma:migrate:deploy": "dotenv -e .env -e .env.production -- npx prisma migrate deploy",
     "prisma:generate": "dotenv -e .env -e .env.development -- npx prisma generate",
