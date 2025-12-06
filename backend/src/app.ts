@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import {Request, Response} from "express";
+import { Request, Response, NextFunction } from "express";
 
 // Load common .env first, then environment-specific file
 dotenv.config();
