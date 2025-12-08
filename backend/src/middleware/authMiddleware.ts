@@ -5,32 +5,36 @@ export interface authRequest extends Request {
   user?: JwtPayload & { userId: string; email: string };
 }
 
-export function authMiddleware(
+export const authMiddleware = async(
   req: authRequest,
   res: Response,
   next: NextFunction
-) {
+) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "Unauthorized" });
+      return;
     }
 
     const token = authHeader.split(" ")[1];
     if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "Unauthorized" });
+      return;
     }
 
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      return res.status(500).json({ error: "JWT secret not configured" });
+      res.status(500).json({ error: "JWT secret not configured" });
+      return;
     }
 
     const decoded = jwt.verify(token, jwtSecret);
 
     if (typeof decoded !== "object" || decoded === null) {
-      return res.status(401).json({ error: "Invalid token payload" });
+      res.status(401).json({ error: "Invalid token payload" });
+      return;
     }
 
     const payload = decoded as JwtPayload;
@@ -39,7 +43,8 @@ export function authMiddleware(
       typeof payload.userId !== "string" ||
       typeof payload.email !== "string"
     ) {
-      return res.status(401).json({ error: "Invalid token payload" });
+      res.status(401).json({ error: "Invalid token payload" });
+      return;
     }
 
     const userPayload = {
@@ -50,6 +55,7 @@ export function authMiddleware(
     req.user = userPayload;
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Invalid token" });
+    res.status(401).json({ error: "Invalid token" });
+    return;
   }
-}
+};
