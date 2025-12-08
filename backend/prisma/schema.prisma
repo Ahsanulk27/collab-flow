@@ -27,6 +27,7 @@ model User {
 
   // Relations
   memberships   WorkspaceMember[]
+  assignedTasks Task[]          @relation("AssignedTasks")
 }
 
 
@@ -41,8 +42,25 @@ model Workspace {
 
   // Relations
   members     WorkspaceMember[]
+  tasks       Task[]
 }
 
+// TASK MODEL //
+
+model Task {
+  id           String      @id @default(uuid())
+  title        String
+  description  String?
+  status       String          
+  assignedToId String?     
+  workspaceId  String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Relations
+  assignedTo   User?       @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  workspace    Workspace   @relation(fields: [workspaceId], references: [id])
+}
 
 // WORKSPACE MEMBER (JOIN TABLE) //
 
