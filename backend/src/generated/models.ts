@@ -10,5 +10,6 @@
  */
 export type * from './models/User'
 export type * from './models/Workspace'
+export type * from './models/Task'
 export type * from './models/WorkspaceMember'
 export type * from './commonInputTypes'

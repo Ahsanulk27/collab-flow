@@ -5,13 +5,13 @@ import { Request, Response, NextFunction } from "express";
 
 // Load common .env first, then environment-specific file
 dotenv.config();
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV || "production";
 dotenv.config({ path: `.env.${env}`, override: true }); // Override with env-specific vars
 
 import authRouter from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
 import workspaceRouter from "./routes/workspaceRoutes";
-
+import taskRouter from "./routes/taskRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/workspaces", workspaceRouter);
-
+app.use("/api/v1", taskRouter)
 app.use(errorHandler);
 
 app.get("/", (req: Request, res: Response) => {
