@@ -1,0 +1,322 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Aqua Color Palette */
+    --aqua-50: 186 100% 97%;
+    --aqua-100: 186 85% 93%;
+    --aqua-200: 186 80% 86%;
+    --aqua-300: 186 70% 78%;
+    --aqua-400: 186 60% 65%;
+    --aqua-500: 186 55% 55%;
+    --aqua-600: 186 50% 45%;
+    
+    /* Teal Accents */
+    --teal-primary: 190 55% 63%;
+    --teal-secondary: 190 50% 56%;
+    --teal-dark: 190 45% 40%;
+    
+    /* Glass Effects */
+    --glass-white: 0 0% 100%;
+    --glass-opacity: 0.18;
+    --glass-blur: 20px;
+    --glass-border: 0 0% 100% / 0.3;
+    --glass-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+    --glass-glow: 0 0 40px rgba(110, 195, 217, 0.15);
+    
+    /* Core Design Tokens */
+    --background: 186 60% 93%;
+    --foreground: 200 25% 20%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 200 25% 20%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 25% 20%;
+    
+    --primary: 190 55% 63%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 186 40% 96%;
+    --secondary-foreground: 200 25% 25%;
+    
+    --muted: 186 30% 94%;
+    --muted-foreground: 200 15% 50%;
+    
+    --accent: 190 50% 56%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 186 30% 88%;
+    --input: 186 30% 90%;
+    --ring: 190 55% 63%;
+    
+    --radius: 1.375rem;
+    --radius-lg: 1.75rem;
+    --radius-xl: 2rem;
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 100% / 0.6;
+    --sidebar-foreground: 200 25% 25%;
+    --sidebar-primary: 190 55% 63%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 186 50% 94%;
+    --sidebar-accent-foreground: 200 25% 25%;
+    --sidebar-border: 186 30% 88%;
+    --sidebar-ring: 190 55% 63%;
+    
+    /* Gradients */
+    --gradient-aqua: linear-gradient(135deg, hsl(186, 60%, 93%) 0%, hsl(186, 70%, 88%) 50%, hsl(190, 60%, 85%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+    --gradient-teal: linear-gradient(135deg, hsl(190, 55%, 63%) 0%, hsl(190, 50%, 56%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(186, 60%, 95%) 0%, hsl(186, 70%, 90%) 50%, hsl(186, 65%, 88%) 100%);
+    --gradient-wave: linear-gradient(180deg, hsl(186, 60%, 93%) 0%, hsl(0, 0%, 98%) 100%);
+  }
+
+  .dark {
+    --background: 200 30% 8%;
+    --foreground: 186 30% 95%;
+    
+    --card: 200 25% 12%;
+    --card-foreground: 186 30% 95%;
+    
+    --popover: 200 25% 12%;
+    --popover-foreground: 186 30% 95%;
+    
+    --primary: 190 55% 55%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 200 20% 18%;
+    --secondary-foreground: 186 30% 90%;
+    
+    --muted: 200 20% 15%;
+    --muted-foreground: 186 20% 60%;
+    
+    --accent: 190 50% 50%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 200 20% 20%;
+    --input: 200 20% 18%;
+    --ring: 190 55% 55%;
+    
+    --sidebar-background: 200 25% 10%;
+    --sidebar-foreground: 186 30% 90%;
+    --sidebar-primary: 190 55% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 200 20% 15%;
+    --sidebar-accent-foreground: 186 30% 90%;
+    --sidebar-border: 200 20% 18%;
+    --sidebar-ring: 190 55% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Glass Card Effects */
+  .glass-card {
+    @apply bg-white/20 backdrop-blur-xl border border-white/30 shadow-glass;
+    background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+  }
+  
+  .glass-card-solid {
+    @apply bg-white/90 backdrop-blur-xl border border-white/50 shadow-glass;
+  }
+  
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:bg-white/30 hover:shadow-glass-lg hover:-translate-y-1;
+  }
+  
+  /* Floating Elements */
+  .float-element {
+    @apply shadow-float transition-all duration-500;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .float-element-delayed {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+  
+  /* Aqua Background */
+  .bg-aqua-gradient {
+    background: var(--gradient-aqua);
+  }
+  
+  .bg-hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  /* Teal Button */
+  .btn-teal {
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-xl font-medium
+           shadow-teal transition-all duration-300 hover:shadow-teal-lg hover:-translate-y-0.5;
+  }
+  
+  /* Online Indicator */
+  .online-indicator {
+    @apply w-3 h-3 bg-emerald-400 rounded-full border-2 border-white shadow-sm;
+    animation: pulse-online 2s ease-in-out infinite;
+  }
+  
+  /* Message Bubble */
+  .message-bubble {
+    @apply glass-card-solid rounded-2xl px-4 py-3 max-w-md;
+  }
+  
+  .message-bubble-own {
+    @apply bg-primary/90 text-primary-foreground rounded-2xl px-4 py-3 max-w-md;
+  }
+  
+  /* Kanban Card */
+  .kanban-card {
+    @apply glass-card-solid rounded-xl p-4 cursor-grab active:cursor-grabbing
+           transition-all duration-200 hover:shadow-glass-lg hover:-translate-y-1;
+  }
+  
+  /* Wave Separator */
+  .wave-separator {
+    @apply relative w-full overflow-hidden;
+  }
+  
+  .wave-separator::before {
+    content: '';
+    @apply absolute inset-0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100'%3E%3Cpath fill='%23ffffff' d='M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: cover;
+  }
+}
+
+@layer utilities {
+  /* Custom Shadows */
+  .shadow-glass {
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  }
+  
+  .shadow-glass-lg {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  }
+  
+  .shadow-float {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  }
+  
+  .shadow-teal {
+    box-shadow: 0 4px 14px rgba(110, 195, 217, 0.4);
+  }
+  
+  .shadow-teal-lg {
+    box-shadow: 0 8px 25px rgba(110, 195, 217, 0.5);
+  }
+  
+  .shadow-inner-glow {
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Text Gradients */
+  .text-gradient-teal {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(190, 55%, 55%) 0%, hsl(190, 60%, 45%) 100%);
+  }
+  
+  /* Backdrop */
+  .backdrop-glass {
+    @apply backdrop-blur-xl backdrop-saturate-150;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-online {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s ease-out forwards;
+}
+
+.animation-delay-100 { animation-delay: 100ms; }
+.animation-delay-200 { animation-delay: 200ms; }
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-400 { animation-delay: 400ms; }
+.animation-delay-500 { animation-delay: 500ms; }
+.animation-delay-600 { animation-delay: 600ms; }

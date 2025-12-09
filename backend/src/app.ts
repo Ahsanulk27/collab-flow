@@ -2,8 +2,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
+import cors from "cors";
 
-// Load common .env first, then environment-specific file
+
 dotenv.config();
 const env = process.env.NODE_ENV || "production";
 dotenv.config({ path: `.env.${env}`, override: true }); // Override with env-specific vars
@@ -15,6 +16,13 @@ import taskRouter from "./routes/taskRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:8080", 
+    credentials: true,               
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
