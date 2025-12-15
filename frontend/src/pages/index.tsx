@@ -14,6 +14,10 @@ import {
 } from "lucide-react";
 
 const Index = () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const isLoggedIn = !!token;
+
   return (
     <div className="min-h-screen bg-hero-gradient overflow-hidden">
       {/* Navigation */}
@@ -38,12 +42,33 @@ const Index = () => {
             <Button variant="ghost" asChild>
               <Link to="/dashboard">Contact Us</Link>
             </Button>
-            <Button variant="ghost" asChild>
-              <Link to="/signin">Sign In</Link>
-            </Button>
-            <Button variant="teal" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
+
+            {isLoggedIn ? (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/dashboard">Dashboard</Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    sessionStorage.removeItem("token");
+                    window.location.reload();
+                  }}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/login">Sign In</Link>
+                </Button>
+                <Button variant="teal" asChild>
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </nav>

@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import axios from "axios";
 
-const API_BASE = "http://localhost:1045/api/v1";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
-const Signin = () => {
+const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -35,13 +36,14 @@ const Signin = () => {
       if (!token) {
         setError("Invalid response from server.");
         return;
-      }
+      } 
       if (remember) {
         localStorage.setItem("token", token);
       } else {
         sessionStorage.setItem("token", token);
       }
       setSuccess("Signed in successfully!");
+      navigate("/dashboard");
     } catch (err) {
       if (err.response?.data?.error) {
         setError(err.response.data.error);
@@ -189,4 +191,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default Login;

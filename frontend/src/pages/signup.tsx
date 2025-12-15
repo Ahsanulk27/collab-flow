@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import axios from "axios";
 
-const API_BASE = "http://localhost:1045/api/v1";
+const API_BASE = import.meta.env.VITE_API_BASE;
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,17 +33,13 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/auth/signup`,
-        {
-          name,
-          email,
-          password,
-        }
-      );
+      const res = await axios.post(`${API_BASE}/auth/signup`, {
+        name,
+        email,
+        password,
+      });
 
-    setSuccess("Account created successfully! You can now log in.");
-
+      setSuccess("Account created successfully! You can now log in.");
     } catch (err: any) {
       if (err.response?.data?.error) {
         setError(err.response.data.error);
@@ -63,7 +59,7 @@ const Signup = () => {
               Already have an account?
             </span>
             <Button variant="ghost" asChild>
-              <Link to="/">Sign In</Link>
+              <Link to="/login">Sign In</Link>
             </Button>
           </div>
         </div>

@@ -16,7 +16,15 @@ export const getAllWorkspaces = async (req: authRequest, res: Response) => {
       },
       include: {
         members: {
-          include: { user: true }, //include user info for each member
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                profileImage: true,
+              },
+            },
+          }, 
         },
       },
       orderBy: { createdAt: "desc" },

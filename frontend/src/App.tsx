@@ -5,14 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/index";
 import Signup from "./pages/signup";
-import Signin from "./pages/signin";
-// import Dashboard from "./pages/Dashboard";
+import Login from "./pages/login";
+import Dashboard from "./pages/dashboard";
 // import WorkspaceOverview from "./pages/WorkspaceOverview";
 // import ChatPage from "./pages/ChatPage";
 // import TaskBoard from "./pages/TaskBoard";
 // import Whiteboard from "./pages/Whiteboard";
 // import ProfilePage from "./pages/ProfilePage";
 // import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -25,9 +26,11 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/signin" element={<Signin />} />
-          {/* 
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          {<Route element={<ProtectedRoute/>}> 
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+          /* 
           <Route path="/workspace/:id" element={<WorkspaceOverview />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/tasks" element={<TaskBoard />} />
