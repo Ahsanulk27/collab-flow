@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   FolderPlus,
@@ -6,12 +6,14 @@ import {
   PenTool,
   User,
   Layout,
+  LogOut,
 } from "lucide-react";
 import Logo from "./Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
 
 interface UserInfo {
   id: string;
@@ -31,9 +33,23 @@ const navItems = [
   { icon: User, label: "Profile", path: "/profile" },
 ];
 
+const handleLogout = () => {
+  const navigate = useNavigate();
+  localStorage.removeItem("token");
+  sessionStorage.removeItem("token");
+  navigate("/login");
+};
+
 const DashboardSidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [user, setUser] = useState<UserInfo | null>(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  };
 
   useEffect(() => {
     const token =
@@ -81,7 +97,8 @@ const DashboardSidebar = () => {
       </nav>
 
       {user && (
-        <div className="p-4 border-t border-border/50">
+        <div className="p-4 border-t border-border/50 space-y-3">
+          {/* User info */}
           <div className="flex items-center gap-3 px-3 py-2">
             <Avatar className="h-10 w-10">
               {user.profileImage ? (
@@ -95,6 +112,7 @@ const DashboardSidebar = () => {
                 </AvatarFallback>
               )}
             </Avatar>
+
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground truncate">
                 {user.name}
@@ -104,6 +122,16 @@ const DashboardSidebar = () => {
               </p>
             </div>
           </div>
+
+          {/* Logout button */}
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-destructive"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
         </div>
       )}
     </aside>
