@@ -7,7 +7,7 @@ import Index from "./pages/index";
 import Signup from "./pages/signup";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
-// import WorkspaceOverview from "./pages/WorkspaceOverview";
+import WorkspaceOverview from "./pages/workspaceOverview";
 // import ChatPage from "./pages/ChatPage";
 // import TaskBoard from "./pages/TaskBoard";
 // import Whiteboard from "./pages/Whiteboard";
@@ -29,9 +29,9 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           {<Route element={<ProtectedRoute/>}> 
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/workspaces/:workspaceId" element={<WorkspaceOverview />} />
           </Route>
           /* 
-          <Route path="/workspace/:id" element={<WorkspaceOverview />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/tasks" element={<TaskBoard />} />
           <Route path="/whiteboard" element={<Whiteboard />} />

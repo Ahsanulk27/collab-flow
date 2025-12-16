@@ -66,7 +66,7 @@ const WorkspaceCard = ({
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-border/30">
           <AvatarGroup avatars={avatars} size="sm" max={4} />
           <Button variant="teal" size="sm" asChild>
-            <Link to={`/workspace/${id}`}>Open</Link>
+            <Link to={`/workspaces/${id}`}>Open</Link>
           </Button>
         </div>
       </CardContent>

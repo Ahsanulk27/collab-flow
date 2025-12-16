@@ -24,7 +24,7 @@ export const getAllWorkspaces = async (req: authRequest, res: Response) => {
                 profileImage: true,
               },
             },
-          }, 
+          },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -35,6 +35,86 @@ export const getAllWorkspaces = async (req: authRequest, res: Response) => {
     res
       .status(500)
       .json({ success: false, message: "Failed to fetch workspaces" });
+  }
+};
+
+export const getWorkspaceById = async (req: authRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    const { workspaceId } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    if (!workspaceId) {
+      return res.status(400).json({
+        success: false,
+        message: "workspace ID is required",
+      });
+    }
+
+    const membership = await prisma.workspaceMember.findFirst({
+      where: {
+        userId,
+        workspaceId,
+      },
+    });
+
+    if (!membership) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have access to this workspace",
+      });
+    }
+
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: workspaceId },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+        tasks: {
+          orderBy: { createdAt: "desc" },
+        },
+      },
+    });
+
+    if (!workspace) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Workspace not found" });
+    }
+    const responseWorkspace: any = {
+      id: workspace.id,
+      name: workspace.name,
+      description: workspace.description,
+      createdAt: workspace.createdAt,
+      members: workspace.members,
+      tasks: workspace.tasks,
+      role: membership.role,
+    };
+
+    if (membership.role === "OWNER") {
+      responseWorkspace.inviteCode = workspace.inviteCode;
+    }
+
+    res.status(200).json({
+      success: true,
+      workspace: responseWorkspace,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch workspace" });
   }
 };
 

@@ -33,13 +33,6 @@ const navItems = [
   { icon: User, label: "Profile", path: "/profile" },
 ];
 
-const handleLogout = () => {
-  const navigate = useNavigate();
-  localStorage.removeItem("token");
-  sessionStorage.removeItem("token");
-  navigate("/login");
-};
-
 const DashboardSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();

@@ -3,7 +3,8 @@ import {
   getAllWorkspaces,
   createWorkspace,
   joinWorkspace,
-  leaveWorkspace
+  leaveWorkspace,
+  getWorkspaceById,
 } from "../controllers/workspaceController";
 import { authMiddleware } from "../middleware/authMiddleware";
 
@@ -12,6 +13,8 @@ const workspaceRouter = Router();
 workspaceRouter.use(authMiddleware);
 
 workspaceRouter.get("/", getAllWorkspaces);
+
+workspaceRouter.get("/:workspaceId", getWorkspaceById);
 
 workspaceRouter.post("/", createWorkspace);
 
