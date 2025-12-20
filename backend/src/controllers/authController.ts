@@ -9,6 +9,7 @@ export const signup = async (
   next: NextFunction
 ) => {
   try {
+   
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -44,7 +45,6 @@ export const signup = async (
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     return res.status(400).json({ error: "Email and Password are required." });
   }
