@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\Users\\Ahsanul\\Downloads\\collab-flow\\backend\\src\\generated",
+      "value": "/home/adilkhan/Desktop/collab-flow/backend/src/generated",
       "fromEnvVar": null
     },
     "config": {
@@ -32,17 +32,17 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Ahsanul\\Downloads\\collab-flow\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "/home/adilkhan/Desktop/collab-flow/backend/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../prisma",
-  "clientVersion": "6.19.0",
-  "engineVersion": "2ba551f319ab1df4bc874a89965d8b3641056773",
+  "clientVersion": "6.19.1",
+  "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
   "datasourceNames": [
     "db"
   ],
