@@ -27,7 +27,7 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 const navItems = [
   { icon: Home, label: "Home", path: "/dashboard" },
   { icon: Layout, label: "All Workspaces", path: "/dashboard" },
-  { icon: FolderPlus, label: "Create Workspace", path: "/dashboard/new" },
+  { icon: FolderPlus, label: "Create Workspace", path: "/addWorkspace" },
   { icon: MessageCircle, label: "Chat", path: "/chat" },
   { icon: PenTool, label: "Whiteboard", path: "/whiteboard" },
   { icon: User, label: "Profile", path: "/profile" },

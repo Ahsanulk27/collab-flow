@@ -1,7 +1,9 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import WorkspaceCard from "@/components/WorkspaceCard";
 import { Workspace } from "@/types/workspace";
+import JoinWorkspaceDialog from "@/components/JoinWorkspaceDialog";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
@@ -28,28 +30,53 @@ const mapWorkspaceToCard = (workspace: Workspace) => ({
 });
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
+  const [joinOpen, setJoinOpen] = useState(false);
+
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (!token) {
+    navigate("/login");
+  }
+  const fetchWorkspaces = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/workspaces`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setWorkspaces(res.data.workspaces);
+    } catch (err) {
+      console.error("Failed to load workspaces", err);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchWorkspaces = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/workspaces`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setWorkspaces(res.data.workspaces);
-      } catch (err) {
-        console.error("Failed to load workspaces", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchWorkspaces();
   }, []);
+  const handleLeaveWorkspace = async (
+    workspaceId: string,
+    workspaceName: string
+  ) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to leave "${workspaceName}"?`
+    );
+    if (!confirmed) return;
+
+    try {
+      await axios.delete(`${API_BASE}/workspaces/${workspaceId}/leave`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Refresh workspace list
+      fetchWorkspaces();
+    } catch (err) {
+      console.error("Failed to leave workspace", err);
+      alert("Failed to leave workspace");
+    }
+  };
   return (
     <DashboardLayout>
       <div className="mb-8">
@@ -62,20 +89,22 @@ const Dashboard = () => {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <WorkspaceCard
-          id=""
-          title=""
-          description=""
-          icon=""
-          iconBg=""
-          badges={[]}
-          avatars={[]}
-          isAddCard
-        />
+        <WorkspaceCard isAddCard />
+        <WorkspaceCard isJoinCard onJoinClick={() => setJoinOpen(true)} />
         {workspaces.map((workspace) => (
-          <WorkspaceCard key={workspace.id} {...mapWorkspaceToCard(workspace)} />
+          <WorkspaceCard
+            key={workspace.id}
+            {...mapWorkspaceToCard(workspace)}
+            onLeaveClick={() => handleLeaveWorkspace(workspace.id, workspace.name)}
+          />
         ))}
       </div>
+
+      <JoinWorkspaceDialog
+        open={joinOpen}
+        onOpenChange={setJoinOpen}
+        onSuccess={fetchWorkspaces}
+      />
     </DashboardLayout>
   );
 };

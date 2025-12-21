@@ -238,6 +238,19 @@ export const leaveWorkspace = async (req: authRequest, res: Response) => {
       where: { id: membership.id },
     });
 
+    const remainingMembers = await prisma.workspaceMember.count({
+      where: { workspaceId },
+    });
+
+    if (remainingMembers === 0) {
+      await prisma.workspace.delete({ where: { id: workspaceId } });
+
+      return res.status(200).json({
+        success: true,
+        message: "Left workspace and workspace deleted (no members left)",
+      });
+    }
+
     res
       .status(200)
       .json({ success: true, message: "Left workspace successfully" });

@@ -14,6 +14,7 @@ import WorkspaceOverview from "./pages/workspaceOverview";
 // import ProfilePage from "./pages/ProfilePage";
 // import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AddWorkspace from "./pages/addWorkspace";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           {<Route element={<ProtectedRoute/>}> 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/workspaces/:workspaceId" element={<WorkspaceOverview />} />
+            <Route path="/addWorkspace" element={<AddWorkspace/>}/>
           </Route>
           /* 
           <Route path="/chat" element={<ChatPage />} />

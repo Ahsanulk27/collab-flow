@@ -59,7 +59,7 @@ model Task {
 
   // Relations
   assignedTo   User?       @relation("AssignedTasks", fields: [assignedToId], references: [id])
-  workspace    Workspace   @relation(fields: [workspaceId], references: [id])
+  workspace    Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
 
 // WORKSPACE MEMBER (JOIN TABLE) //
@@ -74,7 +74,7 @@ model WorkspaceMember {
 
   // Relations
   user        User       @relation(fields: [userId], references: [id])
-  workspace   Workspace  @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId]) 
 }

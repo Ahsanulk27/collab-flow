@@ -21,7 +21,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:1045", 
+    origin: "http://localhost:8080", 
     credentials: true,               
   })
 );
@@ -43,7 +43,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("CollabFlow Server Running!");
 });
 
-const PORT = process.env.PORT || 1045;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

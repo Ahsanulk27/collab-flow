@@ -13,6 +13,8 @@ import {
   BarChart3,
   Video,
   ArrowLeft,
+  Check,
+  Copy,
 } from "lucide-react";
 
 interface Member {
@@ -36,6 +38,7 @@ interface Workspace {
   id: string;
   name: string;
   description: string | null;
+  inviteCode: string;
   members: Member[];
   tasks: Task[];
   role: "OWNER" | "MEMBER";
@@ -80,6 +83,7 @@ const WorkspaceOverview = () => {
   const { workspaceId } = useParams();
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -168,6 +172,44 @@ const WorkspaceOverview = () => {
           <CardHeader>
             <CardTitle className="text-lg">Team Members</CardTitle>
           </CardHeader>
+          <Card variant="glass-solid" className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Invite Code</CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Share this code to invite others
+                </p>
+                <p className="text-xl font-mono font-semibold tracking-wider">
+                  {workspace.inviteCode}
+                </p>
+              </div>
+
+              <Button
+                variant="outline"
+                className="gap-2 transition-all"
+                onClick={() => {
+                  navigator.clipboard.writeText(workspace.inviteCode);
+                  setCopied(true);
+
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4 text-green-600 animate-scale-in" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    Copy
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
           <CardContent className="space-y-4">
             {workspace.members.map((member) => (
               <div key={member.user.id} className="flex items-center gap-3">
