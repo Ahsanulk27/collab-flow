@@ -6,6 +6,7 @@ import {
   leaveWorkspace,
   getWorkspaceById,
 } from "../controllers/workspaceController";
+import chatRouter from "./chatRoutes";
 import { authMiddleware } from "../middleware/authMiddleware";
 
 const workspaceRouter = Router();
@@ -21,5 +22,8 @@ workspaceRouter.post("/", createWorkspace);
 workspaceRouter.post("/join", joinWorkspace);
 
 workspaceRouter.delete("/:workspaceId/leave", leaveWorkspace);
+
+// nested chat route for fetching chats in a workspace
+workspaceRouter.use("/:workspaceId/messages", chatRouter);
 
 export default workspaceRouter;

@@ -62,3 +62,8 @@ export type Task = Prisma.TaskModel
  * 
  */
 export type WorkspaceMember = Prisma.WorkspaceMemberModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel

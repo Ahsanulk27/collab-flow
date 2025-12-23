@@ -16,6 +16,8 @@ import {
   Check,
   Copy,
 } from "lucide-react";
+import { MessageSender, Message } from "@/types/message";
+import { useSocket } from "@/hooks/use-socket";
 
 interface Member {
   id: string;
@@ -46,47 +48,56 @@ interface Workspace {
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-const quickLinks = [
-  {
-    icon: MessageCircle,
-    label: "Chat",
-    path: "/chat",
-    color: "bg-sky-100 text-sky-600",
-  },
-  {
-    icon: KanbanSquare,
-    label: "Task Board",
-    path: "/tasks",
-    color: "bg-amber-100 text-amber-600",
-  },
-  {
-    icon: PenTool,
-    label: "Whiteboard",
-    path: "/whiteboard",
-    color: "bg-violet-100 text-violet-600",
-  },
-  {
-    icon: BarChart3,
-    label: "Stats",
-    path: "#",
-    color: "bg-emerald-100 text-emerald-600",
-  },
-  {
-    icon: Video,
-    label: "Video Call",
-    path: "#",
-    color: "bg-rose-100 text-rose-600",
-  },
-];
-
 const WorkspaceOverview = () => {
   const { workspaceId } = useParams();
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const socket = useSocket().socket;
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-
+  const [recentMessages, setRecentMessages] = useState<Message[]>([]);
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
+
+  const quickLinks = [
+    {
+      icon: MessageCircle,
+      label: "Chat",
+      path: `/workspaces/${workspaceId}/chat`,
+      color: "bg-sky-100 text-sky-600",
+    },
+    {
+      icon: KanbanSquare,
+      label: "Task Board",
+      path: "/tasks",
+      color: "bg-amber-100 text-amber-600",
+    },
+    {
+      icon: PenTool,
+      label: "Whiteboard",
+      path: "/whiteboard",
+      color: "bg-violet-100 text-violet-600",
+    },
+    {
+      icon: BarChart3,
+      label: "Stats",
+      path: "#",
+      color: "bg-emerald-100 text-emerald-600",
+    },
+    {
+      icon: Video,
+      label: "Video Call",
+      path: "#",
+      color: "bg-rose-100 text-rose-600",
+    },
+  ];
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   useEffect(() => {
     const fetchWorkspace = async () => {
@@ -106,6 +117,42 @@ const WorkspaceOverview = () => {
 
     if (workspaceId) fetchWorkspace();
   }, [workspaceId]);
+
+  useEffect(() => {
+    const fetchRecentMessages = async () => {
+      try {
+        const res = await axios.get(
+          `${API_BASE}/workspaces/${workspaceId}/messages?limit=5`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setRecentMessages(res.data.messages);
+      } catch (err) {
+        console.error("Failed to load recent messages", err);
+      }
+    };
+
+    if (workspaceId) fetchRecentMessages();
+  }, [workspaceId]);
+  useEffect(() => {
+    if (!socket || !workspaceId) return;
+
+    socket.emit("joinWorkspace", workspaceId);
+
+    socket.on("newMessage", (message: Message) => {
+      setRecentMessages((prev) => {
+        const updated = [...prev, message];
+        return updated.slice(-5);
+      });
+    });
+
+    return () => {
+      socket.off("newMessage");
+    };
+  }, [socket, workspaceId]);
   if (loading) {
     return (
       <DashboardLayout>
@@ -233,6 +280,43 @@ const WorkspaceOverview = () => {
           </CardContent>
         </Card>
 
+        {/* Recent Messages */}
+        <Card variant="glass-solid" className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-lg">Recent Messages</CardTitle>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            {recentMessages.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center">
+                No messages yet
+              </p>
+            ) : (
+              recentMessages.map((msg) => (
+                <div key={msg.id} className="p-3 rounded-xl bg-muted/50">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm font-medium">
+                      {msg.sender.name || "Unknown"}
+                    </p>
+                    <span className="text-xs text-muted-foreground">
+                      {formatTime(msg.createdAt)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {msg.content}
+                  </p>
+                </div>
+              ))
+            )}
+
+            <Button variant="ghost" className="w-full" asChild>
+              <Link to={`/workspaces/${workspaceId}/chat`}>
+                View all messages
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Upcoming Tasks */}
         <Card variant="glass-solid" className="lg:col-span-1">
           <CardHeader>
@@ -247,9 +331,6 @@ const WorkspaceOverview = () => {
               >
                 <div>
                   <p className="text-sm font-medium">{task.title}</p>
-                  {/* <p className="text-xs text-muted-foreground">
-                    Status: {task.status}
-                  </p> */}
                 </div>
 
                 <Badge variant="default">{task.status}</Badge>

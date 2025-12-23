@@ -28,6 +28,7 @@ model User {
   // Relations
   memberships   WorkspaceMember[]
   assignedTasks Task[]          @relation("AssignedTasks")
+  messages Message[]
 }
 
 
@@ -43,6 +44,7 @@ model Workspace {
   // Relations
   members     WorkspaceMember[]
   tasks       Task[]
+  messages Message[]
 }
 
 // TASK MODEL //
@@ -78,6 +80,21 @@ model WorkspaceMember {
 
   @@unique([userId, workspaceId]) 
 }
+
+// MESSAGE MODEL //
+model Message {
+  id          String    @id @default(cuid())
+  content     String
+
+  workspaceId String
+  senderId    String
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  sender      User      @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+}
+
 
 enum WorkspaceRole {
   OWNER

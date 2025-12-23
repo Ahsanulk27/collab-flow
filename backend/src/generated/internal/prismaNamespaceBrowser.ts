@@ -52,7 +52,8 @@ export const ModelName = {
   User: 'User',
   Workspace: 'Workspace',
   Task: 'Task',
-  WorkspaceMember: 'WorkspaceMember'
+  WorkspaceMember: 'WorkspaceMember',
+  Message: 'Message'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -117,6 +118,17 @@ export const WorkspaceMemberScalarFieldEnum = {
 } as const
 
 export type WorkspaceMemberScalarFieldEnum = (typeof WorkspaceMemberScalarFieldEnum)[keyof typeof WorkspaceMemberScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  workspaceId: 'workspaceId',
+  senderId: 'senderId',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const SortOrder = {

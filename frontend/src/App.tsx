@@ -8,7 +8,7 @@ import Signup from "./pages/signup";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import WorkspaceOverview from "./pages/workspaceOverview";
-// import ChatPage from "./pages/ChatPage";
+import ChatPage from "./pages/chatPage";
 // import TaskBoard from "./pages/TaskBoard";
 // import Whiteboard from "./pages/Whiteboard";
 // import ProfilePage from "./pages/ProfilePage";
@@ -32,9 +32,10 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/workspaces/:workspaceId" element={<WorkspaceOverview />} />
             <Route path="/addWorkspace" element={<AddWorkspace/>}/>
+            <Route path="/workspaces/:workspaceId/chat" element={<ChatPage />} />
           </Route>
           /* 
-          <Route path="/chat" element={<ChatPage />} />
+          
           <Route path="/tasks" element={<TaskBoard />} />
           <Route path="/whiteboard" element={<Whiteboard />} />
           <Route path="/profile" element={<ProfilePage />} />

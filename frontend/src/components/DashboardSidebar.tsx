@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Home,
   FolderPlus,
@@ -24,20 +24,20 @@ interface UserInfo {
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-const navItems = [
-  { icon: Home, label: "Home", path: "/dashboard" },
-  { icon: Layout, label: "All Workspaces", path: "/dashboard" },
-  { icon: FolderPlus, label: "Create Workspace", path: "/addWorkspace" },
-  { icon: MessageCircle, label: "Chat", path: "/chat" },
-  { icon: PenTool, label: "Whiteboard", path: "/whiteboard" },
-  { icon: User, label: "Profile", path: "/profile" },
-];
-
 const DashboardSidebar = () => {
+  const {workspaceId} = useParams<{workspaceId?: string}>();
   const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<UserInfo | null>(null);
 
+  const navItems = [
+    { icon: Home, label: "Home", path: "/dashboard" },
+    { icon: Layout, label: "All Workspaces", path: "/dashboard" },
+    { icon: FolderPlus, label: "Create Workspace", path: "/addWorkspace" },
+    { icon: MessageCircle, label: "Chat", path: `/workspaces/${workspaceId}/chat` },
+    { icon: PenTool, label: "Whiteboard", path: "/whiteboard" },
+    { icon: User, label: "Profile", path: "/profile" },
+  ];
   const handleLogout = () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");

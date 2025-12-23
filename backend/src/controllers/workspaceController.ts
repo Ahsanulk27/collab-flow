@@ -101,11 +101,10 @@ export const getWorkspaceById = async (req: authRequest, res: Response) => {
       members: workspace.members,
       tasks: workspace.tasks,
       role: membership.role,
+      inviteCode: workspace.inviteCode,
     };
 
-    if (membership.role === "OWNER") {
-      responseWorkspace.inviteCode = workspace.inviteCode;
-    }
+    
 
     res.status(200).json({
       success: true,
