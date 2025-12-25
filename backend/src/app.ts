@@ -15,6 +15,7 @@ import workspaceRouter from "./routes/workspaceRoutes";
 import taskRouter from "./routes/taskRoutes";
 import profileRouter from "./routes/profileRoutes";
 import chatRouter from "./routes/chatRoutes";
+import iconRouter from "./routes/iconRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/workspaces", workspaceRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1", taskRouter);
+app.use("/api/v1/icons", iconRouter);
 
 app.use(errorHandler);
 

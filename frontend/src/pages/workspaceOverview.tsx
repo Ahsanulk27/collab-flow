@@ -1,3 +1,5 @@
+import TaskAssignmentDialog from "@/components/TaskAssignmentDialog";
+import { UserPlus } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -32,8 +34,18 @@ interface Member {
 interface Task {
   id: string;
   title: string;
+  description?: string;
   status: string;
+  assignedToId?: string | null;
+  workspaceId: string;
   createdAt: string;
+  updatedAt?: string;
+  assignedTo?: {
+    id: string;
+    name: string;
+    email: string;
+    profileImage: string | null;
+  } | null;
 }
 
 interface Workspace {
@@ -55,8 +67,34 @@ const WorkspaceOverview = () => {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [recentMessages, setRecentMessages] = useState<Message[]>([]);
+  const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
+
+  const handleAssignClick = (task: Task) => {
+    setSelectedTask(task);
+    setAssignmentDialogOpen(true);
+  };
+
+  const handleAssignmentSuccess = () => {
+    // Refresh workspace data
+    if (workspaceId) {
+      const fetchWorkspace = async () => {
+        try {
+          const res = await axios.get(`${API_BASE}/workspaces/${workspaceId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setWorkspace(res.data.workspace);
+        } catch (err) {
+          console.error("Failed to load workspace", err);
+        }
+      };
+      fetchWorkspace();
+    }
+  };
 
   const quickLinks = [
     {
@@ -68,7 +106,7 @@ const WorkspaceOverview = () => {
     {
       icon: KanbanSquare,
       label: "Task Board",
-      path: "/tasks",
+      path: `/workspaces/${workspaceId}/tasks`,
       color: "bg-amber-100 text-amber-600",
     },
     {
@@ -329,11 +367,36 @@ const WorkspaceOverview = () => {
                 key={task.id}
                 className="p-3 rounded-xl bg-muted/50 flex items-center justify-between"
               >
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium">{task.title}</p>
+                  {task.assignedTo && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Avatar className="h-5 w-5">
+                        <AvatarImage src={task.assignedTo.profileImage} />
+                        <AvatarFallback className="text-xs">
+                          {task.assignedTo.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="text-xs text-muted-foreground">
+                        {task.assignedTo.name}
+                      </p>
+                    </div>
+                  )}
                 </div>
-
-                <Badge variant="default">{task.status}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="default">{task.status}</Badge>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleAssignClick(task)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             ))}
 
@@ -351,6 +414,17 @@ const WorkspaceOverview = () => {
           </CardContent>
         </Card>
       </div>
+
+      {selectedTask && (
+        <TaskAssignmentDialog
+          open={assignmentDialogOpen}
+          onOpenChange={setAssignmentDialogOpen}
+          taskId={selectedTask.id}
+          workspaceId={workspaceId || ""}
+          currentAssignee={selectedTask.assignedTo || null}
+          onSuccess={handleAssignmentSuccess}
+        />
+      )}
     </DashboardLayout>
   );
 };

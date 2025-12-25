@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\Users\\Ahsanul\\Downloads\\collab-flow\\backend\\src\\generated",
+      "value": "D:\\bruh\\wall\\study\\471\\collab-flow\\backend\\src\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -37,7 +37,7 @@ const config: runtime.GetPrismaClientConfig = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Ahsanul\\Downloads\\collab-flow\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "D:\\bruh\\wall\\study\\471\\collab-flow\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../prisma",
