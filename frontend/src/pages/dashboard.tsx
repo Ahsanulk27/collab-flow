@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+const BACKEND_URL = API_BASE.replace('/api/v1', '');
 
 const mapWorkspaceToCard = (workspace: Workspace) => ({
   id: workspace.id, // not using as of now
@@ -21,7 +22,9 @@ const mapWorkspaceToCard = (workspace: Workspace) => ({
     },
   ],
   avatars: workspace.members.slice(0, 5).map((m) => ({
-    src: m.user.profileImage || undefined,
+    src: m.user.profileImage
+      ? `${BACKEND_URL}${m.user.profileImage}?t=${Date.now()}`
+      : undefined,
     fallback: m.user.name
       .split(" ")
       .map((n) => n[0])
@@ -56,7 +59,22 @@ const Dashboard = () => {
   };
   useEffect(() => {
     fetchWorkspaces();
-  }, []);
+
+    // Refresh workspaces 
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchWorkspaces();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []); 
+
   const handleLeaveWorkspace = async (
     workspaceId: string,
     workspaceName: string
@@ -70,7 +88,7 @@ const Dashboard = () => {
       await axios.delete(`${API_BASE}/workspaces/${workspaceId}/leave`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Refresh workspace list
+      // Refresh
       fetchWorkspaces();
     } catch (err) {
       console.error("Failed to leave workspace", err);
@@ -95,7 +113,9 @@ const Dashboard = () => {
           <WorkspaceCard
             key={workspace.id}
             {...mapWorkspaceToCard(workspace)}
-            onLeaveClick={() => handleLeaveWorkspace(workspace.id, workspace.name)}
+            onLeaveClick={() =>
+              handleLeaveWorkspace(workspace.id, workspace.name)
+            }
           />
         ))}
       </div>

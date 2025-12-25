@@ -42,3 +42,8 @@ export type WorkspaceMember = Prisma.WorkspaceMemberModel
  * 
  */
 export type Message = Prisma.MessageModel
+/**
+ * Model Whiteboard
+ * 
+ */
+export type Whiteboard = Prisma.WhiteboardModel

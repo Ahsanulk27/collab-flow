@@ -47,6 +47,7 @@ interface Workspace {
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+const BACKEND_URL = API_BASE.replace('/api/v1', '');
 
 const WorkspaceOverview = () => {
   const { workspaceId } = useParams();
@@ -74,7 +75,7 @@ const WorkspaceOverview = () => {
     {
       icon: PenTool,
       label: "Whiteboard",
-      path: "/whiteboard",
+      path: `/workspaces/${workspaceId}/whiteboard`,
       color: "bg-violet-100 text-violet-600",
     },
     {
@@ -262,12 +263,21 @@ const WorkspaceOverview = () => {
               <div key={member.user.id} className="flex items-center gap-3">
                 <div className="relative">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={member.user.profileImage} />
+                    <AvatarImage
+                      src={
+                        member.user.profileImage
+                          ? `${BACKEND_URL}${
+                              member.user.profileImage
+                            }?t=${Date.now()}`
+                          : undefined
+                      }
+                    />
                     <AvatarFallback>
                       {member.user.name
                         .split(" ")
                         .map((n) => n[0])
-                        .join("")}
+                        .join("")
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </div>

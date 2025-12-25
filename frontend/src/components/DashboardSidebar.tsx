@@ -11,31 +11,18 @@ import {
 import Logo from "./Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
-
-interface UserInfo {
-  id: string;
-  name: string;
-  email: string;
-  profileImage?: string | null;
-}
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { useUser } from "@/context/UserContext";
 
 const DashboardSidebar = () => {
   const {workspaceId} = useParams<{workspaceId?: string}>();
   const location = useLocation();
   const navigate = useNavigate();
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const { user } = useUser();
 
   const navItems = [
     { icon: Home, label: "Home", path: "/dashboard" },
     { icon: Layout, label: "All Workspaces", path: "/dashboard" },
-    { icon: FolderPlus, label: "Create Workspace", path: "/addWorkspace" },
-    { icon: MessageCircle, label: "Chat", path: `/workspaces/${workspaceId}/chat` },
-    { icon: PenTool, label: "Whiteboard", path: "/whiteboard" },
     { icon: User, label: "Profile", path: "/profile" },
   ];
   const handleLogout = () => {
@@ -43,24 +30,6 @@ const DashboardSidebar = () => {
     sessionStorage.removeItem("token");
     navigate("/login");
   };
-
-  useEffect(() => {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data.user);
-      } catch (err) {
-        console.error("Failed to fetch user info", err);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   return (
     <aside className="w-64 h-screen bg-white/60 backdrop-blur-xl border-r border-white/40 flex flex-col fixed left-0 top-0 z-40">
