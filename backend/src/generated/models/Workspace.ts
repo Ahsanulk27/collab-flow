@@ -185,6 +185,7 @@ export type WorkspaceWhereInput = {
   members?: Prisma.WorkspaceMemberListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  whiteboard?: Prisma.XOR<Prisma.WhiteboardNullableScalarRelationFilter, Prisma.WhiteboardWhereInput> | null
 }
 
 export type WorkspaceOrderByWithRelationInput = {
@@ -196,6 +197,7 @@ export type WorkspaceOrderByWithRelationInput = {
   members?: Prisma.WorkspaceMemberOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  whiteboard?: Prisma.WhiteboardOrderByWithRelationInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -210,6 +212,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   members?: Prisma.WorkspaceMemberListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  whiteboard?: Prisma.XOR<Prisma.WhiteboardNullableScalarRelationFilter, Prisma.WhiteboardWhereInput> | null
 }, "id" | "inviteCode">
 
 export type WorkspaceOrderByWithAggregationInput = {
@@ -243,6 +246,7 @@ export type WorkspaceCreateInput = {
   members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
   tasks?: Prisma.TaskCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
@@ -254,6 +258,7 @@ export type WorkspaceUncheckedCreateInput = {
   members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardUncheckedCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceUpdateInput = {
@@ -265,6 +270,7 @@ export type WorkspaceUpdateInput = {
   members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUpdateOneWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
@@ -276,6 +282,7 @@ export type WorkspaceUncheckedUpdateInput = {
   members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUncheckedUpdateOneWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyInput = {
@@ -373,6 +380,20 @@ export type WorkspaceUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutMessagesInput, Prisma.WorkspaceUpdateWithoutMessagesInput>, Prisma.WorkspaceUncheckedUpdateWithoutMessagesInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutWhiteboardInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutWhiteboardInput, Prisma.WorkspaceUncheckedCreateWithoutWhiteboardInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutWhiteboardInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutWhiteboardNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutWhiteboardInput, Prisma.WorkspaceUncheckedCreateWithoutWhiteboardInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutWhiteboardInput
+  upsert?: Prisma.WorkspaceUpsertWithoutWhiteboardInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutWhiteboardInput, Prisma.WorkspaceUpdateWithoutWhiteboardInput>, Prisma.WorkspaceUncheckedUpdateWithoutWhiteboardInput>
+}
+
 export type WorkspaceCreateWithoutTasksInput = {
   id?: string
   name: string
@@ -381,6 +402,7 @@ export type WorkspaceCreateWithoutTasksInput = {
   createdAt?: Date | string
   members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutTasksInput = {
@@ -391,6 +413,7 @@ export type WorkspaceUncheckedCreateWithoutTasksInput = {
   createdAt?: Date | string
   members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardUncheckedCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutTasksInput = {
@@ -417,6 +440,7 @@ export type WorkspaceUpdateWithoutTasksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUpdateOneWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutTasksInput = {
@@ -427,6 +451,7 @@ export type WorkspaceUncheckedUpdateWithoutTasksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUncheckedUpdateOneWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutMembersInput = {
@@ -437,6 +462,7 @@ export type WorkspaceCreateWithoutMembersInput = {
   createdAt?: Date | string
   tasks?: Prisma.TaskCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutMembersInput = {
@@ -447,6 +473,7 @@ export type WorkspaceUncheckedCreateWithoutMembersInput = {
   createdAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardUncheckedCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutMembersInput = {
@@ -473,6 +500,7 @@ export type WorkspaceUpdateWithoutMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUpdateOneWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutMembersInput = {
@@ -483,6 +511,7 @@ export type WorkspaceUncheckedUpdateWithoutMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUncheckedUpdateOneWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutMessagesInput = {
@@ -493,6 +522,7 @@ export type WorkspaceCreateWithoutMessagesInput = {
   createdAt?: Date | string
   members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
   tasks?: Prisma.TaskCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutMessagesInput = {
@@ -503,6 +533,7 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   createdAt?: Date | string
   members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  whiteboard?: Prisma.WhiteboardUncheckedCreateNestedOneWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutMessagesInput = {
@@ -529,6 +560,7 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUpdateOneWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
@@ -539,6 +571,67 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  whiteboard?: Prisma.WhiteboardUncheckedUpdateOneWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutWhiteboardInput = {
+  id?: string
+  name: string
+  description?: string | null
+  inviteCode: string
+  createdAt?: Date | string
+  members?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutWhiteboardInput = {
+  id?: string
+  name: string
+  description?: string | null
+  inviteCode: string
+  createdAt?: Date | string
+  members?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutWhiteboardInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutWhiteboardInput, Prisma.WorkspaceUncheckedCreateWithoutWhiteboardInput>
+}
+
+export type WorkspaceUpsertWithoutWhiteboardInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutWhiteboardInput, Prisma.WorkspaceUncheckedUpdateWithoutWhiteboardInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutWhiteboardInput, Prisma.WorkspaceUncheckedCreateWithoutWhiteboardInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutWhiteboardInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutWhiteboardInput, Prisma.WorkspaceUncheckedUpdateWithoutWhiteboardInput>
+}
+
+export type WorkspaceUpdateWithoutWhiteboardInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutWhiteboardInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 
@@ -599,6 +692,7 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   members?: boolean | Prisma.Workspace$membersArgs<ExtArgs>
   tasks?: boolean | Prisma.Workspace$tasksArgs<ExtArgs>
   messages?: boolean | Prisma.Workspace$messagesArgs<ExtArgs>
+  whiteboard?: boolean | Prisma.Workspace$whiteboardArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
@@ -631,6 +725,7 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   members?: boolean | Prisma.Workspace$membersArgs<ExtArgs>
   tasks?: boolean | Prisma.Workspace$tasksArgs<ExtArgs>
   messages?: boolean | Prisma.Workspace$messagesArgs<ExtArgs>
+  whiteboard?: boolean | Prisma.Workspace$whiteboardArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -642,6 +737,7 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     members: Prisma.$WorkspaceMemberPayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    whiteboard: Prisma.$WhiteboardPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1046,6 +1142,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   members<T extends Prisma.Workspace$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.Workspace$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.Workspace$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  whiteboard<T extends Prisma.Workspace$whiteboardArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$whiteboardArgs<ExtArgs>>): Prisma.Prisma__WhiteboardClient<runtime.Types.Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1537,6 +1634,25 @@ export type Workspace$messagesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * Workspace.whiteboard
+ */
+export type Workspace$whiteboardArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Whiteboard
+   */
+  select?: Prisma.WhiteboardSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Whiteboard
+   */
+  omit?: Prisma.WhiteboardOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WhiteboardInclude<ExtArgs> | null
+  where?: Prisma.WhiteboardWhereInput
 }
 
 /**

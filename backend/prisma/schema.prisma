@@ -45,6 +45,7 @@ model Workspace {
   members     WorkspaceMember[]
   tasks       Task[]
   messages Message[]
+  whiteboard  Whiteboard?
 }
 
 // TASK MODEL //
@@ -101,3 +102,13 @@ enum WorkspaceRole {
   ADMIN
   MEMBER
 }
+
+model Whiteboard {
+  id          String   @id @default(uuid())
+  workspaceId String   @unique
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  elements    Json     @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

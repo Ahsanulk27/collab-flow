@@ -12,6 +12,7 @@ import { useSocket } from "@/hooks/use-socket";
 import { jwtDecode } from "jwt-decode";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+const BACKEND_URL = API_BASE.replace("/api/v1", "");
 
 interface Message {
   id: string;
@@ -168,17 +169,22 @@ const ChatPage = () => {
                     key={msg.id}
                     className={`flex gap-3 ${isOwn ? "flex-row-reverse" : ""}`}
                   >
-                    <Avatar className="h-9 w-9 flex-shrink-0">
-                      <AvatarImage src={msg.sender.profileImage || undefined} />
-                      <AvatarFallback
-                        className={
-                          isOwn ? "bg-primary text-primary-foreground" : ""
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage
+                        src={
+                          msg.sender.profileImage
+                            ? `${BACKEND_URL}${
+                                msg.sender.profileImage
+                              }?t=${Date.now()}`
+                            : undefined
                         }
-                      >
+                      />
+                      <AvatarFallback>
                         {msg.sender.name
-                          ?.split(" ")
+                          .split(" ")
                           .map((n) => n[0])
-                          .join("") || "U"}
+                          .join("")
+                          .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className={`max-w-md ${isOwn ? "text-right" : ""}`}>

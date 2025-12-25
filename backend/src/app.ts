@@ -14,7 +14,7 @@ import userRouter from "./routes/userRoutes";
 import workspaceRouter from "./routes/workspaceRoutes";
 import taskRouter from "./routes/taskRoutes";
 import profileRouter from "./routes/profileRoutes";
-import chatRouter from "./routes/chatRoutes";
+import whiteboardRouter from "./routes/whiteboardRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
@@ -36,6 +36,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/workspaces", workspaceRouter);
 app.use("/api/v1/profile", profileRouter);
+app.use("/api/v1/whiteboards", whiteboardRouter);
 app.use("/api/v1", taskRouter);
 
 app.use(errorHandler);
@@ -43,11 +44,6 @@ app.use(errorHandler);
 app.get("/", (req: Request, res: Response) => {
   res.send("CollabFlow Server Running!");
 });
-
-// const PORT = process.env.PORT;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
 
 
 
