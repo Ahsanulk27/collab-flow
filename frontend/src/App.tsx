@@ -8,8 +8,8 @@ import Signup from "./pages/signup";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import WorkspaceOverview from "./pages/workspaceOverview";
+import TaskBoard from "./pages/TaskBoard";
 // import ChatPage from "./pages/ChatPage";
-// import TaskBoard from "./pages/TaskBoard";
 // import Whiteboard from "./pages/Whiteboard";
 // import ProfilePage from "./pages/ProfilePage";
 // import NotFound from "./pages/NotFound";
@@ -31,6 +31,7 @@ const App = () => (
           {<Route element={<ProtectedRoute/>}> 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/workspaces/:workspaceId" element={<WorkspaceOverview />} />
+            <Route path="/workspaces/:workspaceId/tasks" element={<TaskBoard />} />
             <Route path="/addWorkspace" element={<AddWorkspace/>}/>
           </Route>
           /* 

@@ -29,6 +29,16 @@ export const createTask = async (
         assignedToId,
         workspaceId,
       },
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            profileImage: true,
+          },
+        },
+      },
     });
     res.status(201).json(task);
   } catch (err) {
@@ -53,6 +63,16 @@ export const getTasksByWorkspace = async (
     const tasks = await prisma.task.findMany({
       where: { workspaceId },
       orderBy: { createdAt: "asc" },
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            profileImage: true,
+          },
+        },
+      },
     });
     res.json(tasks);
   } catch (err) {
@@ -85,6 +105,16 @@ export const updateTask = async (
     const task = await prisma.task.update({
       where: { id: taskId },
       data: { title, description, status, assignedToId },
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            profileImage: true,
+          },
+        },
+      },
     });
     res.json(task);
   } catch (err) {

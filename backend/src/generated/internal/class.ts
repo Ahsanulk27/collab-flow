@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\Users\\Ahsanul\\Downloads\\collab-flow\\backend\\src\\generated",
+      "value": "C:\\Users\\arpah\\collab-flow\\backend\\src\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -37,7 +37,7 @@ const config: runtime.GetPrismaClientConfig = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Ahsanul\\Downloads\\collab-flow\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\arpah\\collab-flow\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../prisma",
@@ -47,7 +47,6 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

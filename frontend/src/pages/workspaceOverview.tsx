@@ -46,41 +46,41 @@ interface Workspace {
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-const quickLinks = [
-  {
-    icon: MessageCircle,
-    label: "Chat",
-    path: "/chat",
-    color: "bg-sky-100 text-sky-600",
-  },
-  {
-    icon: KanbanSquare,
-    label: "Task Board",
-    path: "/tasks",
-    color: "bg-amber-100 text-amber-600",
-  },
-  {
-    icon: PenTool,
-    label: "Whiteboard",
-    path: "/whiteboard",
-    color: "bg-violet-100 text-violet-600",
-  },
-  {
-    icon: BarChart3,
-    label: "Stats",
-    path: "#",
-    color: "bg-emerald-100 text-emerald-600",
-  },
-  {
-    icon: Video,
-    label: "Video Call",
-    path: "#",
-    color: "bg-rose-100 text-rose-600",
-  },
-];
-
 const WorkspaceOverview = () => {
   const { workspaceId } = useParams();
+
+  const quickLinks = [
+    {
+      icon: MessageCircle,
+      label: "Chat",
+      path: "/chat",
+      color: "bg-sky-100 text-sky-600",
+    },
+    {
+      icon: KanbanSquare,
+      label: "Task Board",
+      path: `/workspaces/${workspaceId}/tasks`,
+      color: "bg-amber-100 text-amber-600",
+    },
+    {
+      icon: PenTool,
+      label: "Whiteboard",
+      path: "/whiteboard",
+      color: "bg-violet-100 text-violet-600",
+    },
+    {
+      icon: BarChart3,
+      label: "Stats",
+      path: "#",
+      color: "bg-emerald-100 text-emerald-600",
+    },
+    {
+      icon: Video,
+      label: "Video Call",
+      path: "#",
+      color: "bg-rose-100 text-rose-600",
+    },
+  ];
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
