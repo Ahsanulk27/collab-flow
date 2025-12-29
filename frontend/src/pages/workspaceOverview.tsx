@@ -69,7 +69,7 @@ const WorkspaceOverview = () => {
     {
       icon: KanbanSquare,
       label: "Task Board",
-      path: "/tasks",
+      path: `/workspaces/${workspaceId}/tasks`,
       color: "bg-amber-100 text-amber-600",
     },
     {
@@ -268,7 +268,7 @@ const WorkspaceOverview = () => {
                         member.user.profileImage
                           ? `${BACKEND_URL}${
                               member.user.profileImage
-                            }?t=${Date.now()}`
+                            }`
                           : undefined
                       }
                     />

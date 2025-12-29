@@ -23,7 +23,7 @@ const mapWorkspaceToCard = (workspace: Workspace) => ({
   ],
   avatars: workspace.members.slice(0, 5).map((m) => ({
     src: m.user.profileImage
-      ? `${BACKEND_URL}${m.user.profileImage}?t=${Date.now()}`
+      ? `${BACKEND_URL}${m.user.profileImage}`
       : undefined,
     fallback: m.user.name
       .split(" ")

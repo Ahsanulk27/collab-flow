@@ -2,7 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
@@ -30,13 +36,14 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       if (!token) return;
 
       const response = await axios.get(`${API_BASE}/profile/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       if (response.data.success) {
         setUser(response.data.user);
         setName(response.data.user.name);
@@ -66,16 +73,26 @@ const Profile = () => {
 
     setUploading(true);
     try {
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-      const response = await axios.post(`${API_BASE}/profile/upload-image`, formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+      const response = await axios.post(
+        `${API_BASE}/profile/upload-image`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.data.success) {
-        setUser(prev => prev ? { ...prev, profileImage: response.data.imageUrl } : null);
+        const imageUrlWithTimestamp = `${
+          response.data.imageUrl
+        }?t=${Date.now()}`;
+        setUser((prev) =>
+          prev ? { ...prev, profileImage: imageUrlWithTimestamp } : null
+        );
         await refreshUser();
         toast({
           title: "Success",
@@ -96,18 +113,18 @@ const Profile = () => {
       }
     }
   };
-
   const handleDeleteImage = async () => {
     if (!user?.profileImage) return;
 
     try {
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       const response = await axios.delete(`${API_BASE}/profile/delete-image`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.data.success) {
-        setUser(prev => prev ? { ...prev, profileImage: null } : null);
+        setUser((prev) => (prev ? { ...prev, profileImage: null } : null));
         await refreshUser();
         toast({
           title: "Success",
@@ -136,14 +153,18 @@ const Profile = () => {
 
     setUpdating(true);
     try {
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-      const response = await axios.put(`${API_BASE}/profile/update`, 
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+      const response = await axios.put(
+        `${API_BASE}/profile/update`,
         { name },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.success) {
-        setUser(prev => prev ? { ...prev, name: response.data.user.name } : null);
+        setUser((prev) =>
+          prev ? { ...prev, name: response.data.user.name } : null
+        );
         await refreshUser();
         toast({
           title: "Success",
@@ -176,7 +197,9 @@ const Profile = () => {
     <DashboardLayout>
       <div className="max-w-2xl mx-auto space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Profile Settings</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Profile Settings
+          </h1>
         </div>
 
         <Card>
@@ -188,8 +211,18 @@ const Profile = () => {
           </CardHeader>
           <CardContent className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
             <div className="relative group">
-              <Avatar className="w-32 h-32 cursor-pointer border-4 border-background shadow-xl" onClick={() => fileInputRef.current?.click()}>
-                <AvatarImage src={user?.profileImage ? `${new URL(API_BASE).origin}${user.profileImage}` : undefined} className="object-cover" />
+              <Avatar
+                className="w-32 h-32 cursor-pointer border-4 border-background shadow-xl"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <AvatarImage
+                  src={
+                    user?.profileImage
+                      ? `${new URL(API_BASE).origin}${user.profileImage}`
+                      : undefined
+                  }
+                  className="object-cover"
+                />
                 <AvatarFallback className="text-4xl bg-primary/10 text-primary">
                   {user?.name?.charAt(0).toUpperCase() || "U"}
                 </AvatarFallback>
@@ -208,17 +241,21 @@ const Profile = () => {
 
             <div className="flex-1 space-y-4 text-center sm:text-left">
               <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
                 >
-                  {uploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                  {uploading ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4 mr-2" />
+                  )}
                   Upload New
                 </Button>
                 {user?.profileImage && (
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     onClick={handleDeleteImage}
                     disabled={uploading}
                   >
@@ -240,11 +277,16 @@ const Profile = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
-              <Input 
-                id="email" 
-                value={user?.email || ""} 
-                disabled 
+              <label
+                htmlFor="email"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Email
+              </label>
+              <Input
+                id="email"
+                value={user?.email || ""}
+                disabled
                 className="bg-muted"
               />
               <p className="text-xs text-muted-foreground">
@@ -253,20 +295,30 @@ const Profile = () => {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Full Name</label>
+              <label
+                htmlFor="name"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Full Name
+              </label>
               <div className="flex gap-3">
                 <div className="relative flex-1">
                   <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input 
-                    id="name" 
-                    value={name} 
+                  <Input
+                    id="name"
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="pl-10"
                     placeholder="Enter your name"
                   />
                 </div>
-                <Button onClick={handleUpdateName} disabled={updating || name === user?.name}>
-                  {updating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                <Button
+                  onClick={handleUpdateName}
+                  disabled={updating || name === user?.name}
+                >
+                  {updating && (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  )}
                   Save
                 </Button>
               </div>

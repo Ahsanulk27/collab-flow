@@ -175,7 +175,7 @@ const ChatPage = () => {
                           msg.sender.profileImage
                             ? `${BACKEND_URL}${
                                 msg.sender.profileImage
-                              }?t=${Date.now()}`
+                              }`
                             : undefined
                         }
                       />

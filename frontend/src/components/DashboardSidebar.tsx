@@ -71,7 +71,7 @@ const DashboardSidebar = () => {
                   user.profileImage
                     ? `${BACKEND_URL}${
                         user.profileImage
-                      }?t=${Date.now()}`
+                      }`
                     : undefined
                 }
               />
