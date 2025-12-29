@@ -14,8 +14,11 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/UserContext";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+const BACKEND_URL = API_BASE.replace("/api/v1", "");
+
 const DashboardSidebar = () => {
-  const {workspaceId} = useParams<{workspaceId?: string}>();
+  const { workspaceId } = useParams<{ workspaceId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useUser();
@@ -63,16 +66,22 @@ const DashboardSidebar = () => {
           {/* User info */}
           <div className="flex items-center gap-3 px-3 py-2">
             <Avatar className="h-10 w-10">
-              {user.profileImage ? (
-                <AvatarImage src={user.profileImage} />
-              ) : (
-                <AvatarFallback>
-                  {user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </AvatarFallback>
-              )}
+              <AvatarImage
+                src={
+                  user.profileImage
+                    ? `${BACKEND_URL}${
+                        user.profileImage
+                      }?t=${Date.now()}`
+                    : undefined
+                }
+              />
+              <AvatarFallback>
+                {user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()}
+              </AvatarFallback>
             </Avatar>
 
             <div className="flex-1 min-w-0">
