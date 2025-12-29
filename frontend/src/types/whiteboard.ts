@@ -13,3 +13,8 @@ export interface Shape {
   stroke: string;
   strokeWidth: number;
 }
+
+export interface Page {
+  id: string;
+  elements: Shape[];
+}

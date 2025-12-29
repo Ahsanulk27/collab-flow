@@ -8,9 +8,11 @@ interface CanvasProps {
   elements: Shape[];
   setElements: (elements: Shape[]) => void;
   tool: Tool;
+  color: string;
+  onActionEnd: (updatedElements?: Shape[]) => void;
 }
 
-export const Canvas = ({ elements, setElements, tool }: CanvasProps) => {
+export const Canvas = ({ elements, setElements, tool, color, onActionEnd }: CanvasProps) => {
   const isDrawing = useRef(false);
   const [textArea, setTextArea] = useState<{ x: number; y: number; width: number; height: number; id: string } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,7 +39,7 @@ export const Canvas = ({ elements, setElements, tool }: CanvasProps) => {
       width: 0,
       height: 0,
       points: tool === "pencil" ? [pos.x || 0, pos.y || 0] : undefined,
-      stroke: "#000000",
+      stroke: color,
       strokeWidth: 2,
       text: tool === "text" ? "" : undefined,
     };
@@ -73,7 +75,8 @@ export const Canvas = ({ elements, setElements, tool }: CanvasProps) => {
   };
 
   const handleMouseUp = () => {
-    if (isDrawing.current && tool === "text") {
+    if (isDrawing.current) {
+      if (tool === "text") {
         const lastElement = elements[elements.length - 1];
         // If width/height is too small, set a default size
         const width = Math.abs(lastElement.width || 0) < 20 ? 100 : lastElement.width;
@@ -86,13 +89,18 @@ export const Canvas = ({ elements, setElements, tool }: CanvasProps) => {
             height: height || 50,
             id: lastElement.id
         });
+      } else {
+        onActionEnd();
+      }
     }
     isDrawing.current = false;
   };
 
   const handleShapeClick = (id: string) => {
       if (tool === "eraser") {
-          setElements(elements.filter(el => el.id !== id));
+          const newElements = elements.filter(el => el.id !== id);
+          setElements(newElements);
+          onActionEnd(newElements);
       }
   };
 
@@ -100,12 +108,15 @@ export const Canvas = ({ elements, setElements, tool }: CanvasProps) => {
       if (!textArea || !textareaRef.current) return;
       
       const text = textareaRef.current.value;
+      let newElements = elements;
+
       if (!text.trim()) {
           // Remove empty text element
-          setElements(elements.filter(el => el.id !== textArea.id));
+          newElements = elements.filter(el => el.id !== textArea.id);
+          setElements(newElements);
       } else {
           // Update text content
-          const newElements = elements.map(el => {
+          newElements = elements.map(el => {
               if (el.id === textArea.id) {
                   return { ...el, text };
               }
@@ -113,6 +124,7 @@ export const Canvas = ({ elements, setElements, tool }: CanvasProps) => {
           });
           setElements(newElements);
       }
+      onActionEnd(newElements);
       setTextArea(null);
   };
 
