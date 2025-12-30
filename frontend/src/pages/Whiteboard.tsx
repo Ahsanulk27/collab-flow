@@ -6,11 +6,17 @@ import { Toolbar } from "@/components/whiteboard/Toolbar";
 import { IconSearch } from "@/components/whiteboard/IconSearch";
 import { Shape, Tool, Page } from "@/types/whiteboard";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Trash2, Users } from "lucide-react";
 import { useSocket } from "@/hooks/use-socket";
 import DashboardLayout from "@/components/DashboardLayout";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+
+interface ActiveUser {
+  id: string;
+  name: string | null;
+  email: string;
+}
 
 const Whiteboard = () => {
   const { workspaceId } = useParams();
@@ -30,6 +36,7 @@ const Whiteboard = () => {
 
   const [showIconSearch, setShowIconSearch] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+  const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
 
@@ -48,7 +55,7 @@ const Whiteboard = () => {
         )
       );
 
-      // Update history for the updated page
+      
       setHistory((prevHistory) => {
         const currentHistory = prevHistory[pageId] || { stack: [[]], step: 0 };
         const newStack = [...currentHistory.stack, newElements];
@@ -59,9 +66,15 @@ const Whiteboard = () => {
       });
     });
 
+
+    socket.on("whiteboard-active-users", (users: ActiveUser[]) => {
+      setActiveUsers(users);
+    });
+
     return () => {
       socket.emit("leave-whiteboard", workspaceId);
       socket.off("whiteboard-updated");
+      socket.off("whiteboard-active-users");
     };
   }, [socket, workspaceId]);
 
@@ -73,12 +86,12 @@ const Whiteboard = () => {
         });
         if (res.data && res.data.elements) {
           const data = res.data.elements;
-          // Check if data is Page[] or Shape[]
+          
           if (Array.isArray(data) && data.length > 0 && "elements" in data[0]) {
-            // It's Page[]
+      
             setPages(data as Page[]);
             setActivePageId(data[0].id);
-            // Initialize history for all pages
+            
             const initialHistory: Record<
               string,
               { stack: Shape[][]; step: number }
@@ -88,7 +101,7 @@ const Whiteboard = () => {
             });
             setHistory(initialHistory);
           } else {
-            // It's Shape[] (Legacy)
+    
             const initialPage: Page = { id: "1", elements: data as Shape[] };
             setPages([initialPage]);
             setActivePageId("1");
@@ -148,7 +161,7 @@ const Whiteboard = () => {
   };
 
   const handleElementsChange = (newElements: Shape[]) => {
-    updatePageElements(newElements, false, true); // Emit real-time updates while drawing
+    updatePageElements(newElements, false, true); 
   };
 
   const handleActionEnd = (updatedElements?: Shape[]) => {
@@ -260,6 +273,34 @@ const Whiteboard = () => {
   return (
     <DashboardLayout>
       <div className="relative w-full h-screen overflow-hidden bg-gray-100">
+        {/* Active Users Panel */}
+        <div className="absolute top-4 right-4 bg-white shadow-md rounded-lg px-2 py-1.5 z-20 flex flex-col gap-1.5">
+          <div className="flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5 text-gray-600" />
+            <span className="text-xs font-medium text-gray-700">Active Users:</span>
+          </div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {activeUsers.length === 0 ? (
+              <span className="text-xs text-gray-500">No active users</span>
+            ) : (
+              activeUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center gap-1.5"
+                  title={user.name || user.email}
+                >
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-semibold">
+                    {(user.name || user.email).charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-xs text-gray-700">
+                    {user.name || user.email.split("@")[0]}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
         <Toolbar
           activeTool={tool}
           setTool={setTool}
