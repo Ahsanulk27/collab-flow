@@ -87,7 +87,7 @@ const WorkspaceOverview = () => {
     {
       icon: Video,
       label: "Video Call",
-      path: "#",
+      path: `/workspaces/${workspaceId}/video`,
       color: "bg-rose-100 text-rose-600",
     },
   ];

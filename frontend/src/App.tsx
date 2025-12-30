@@ -12,6 +12,7 @@ import ChatPage from "./pages/chatPage";
 import Whiteboard from "./pages/Whiteboard";
 import Profile from "./pages/profile";
 import TaskBoard from "./pages/TaskBoard";
+import VideoConferencePage from "./pages/videoConferencePage";
 // import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AddWorkspace from "./pages/addWorkspace";
@@ -33,14 +34,29 @@ const App = () => (
 
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/workspaces/:workspaceId" element={<WorkspaceOverview />} />
+              <Route
+                path="/workspaces/:workspaceId"
+                element={<WorkspaceOverview />}
+              />
               <Route path="/addWorkspace" element={<AddWorkspace />} />
-              <Route path="/workspaces/:workspaceId/chat" element={<ChatPage />} />
-              <Route path="/workspaces/:workspaceId/whiteboard" element={<Whiteboard />} />
-                <Route path="/workspaces/:workspaceId/tasks" element={<TaskBoard />} />
+              <Route
+                path="/workspaces/:workspaceId/chat"
+                element={<ChatPage />}
+              />
+              <Route
+                path="/workspaces/:workspaceId/whiteboard"
+                element={<Whiteboard />}
+              />
+              <Route
+                path="/workspaces/:workspaceId/tasks"
+                element={<TaskBoard />}
+              />
+              <Route
+                path="/workspaces/:workspaceId/video"
+                element={<VideoConferencePage />}
+              />
               <Route path="/profile" element={<Profile />} />
             </Route>
-
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             {/* <Route path="*" element={<NotFound />} /> */}
@@ -50,6 +66,5 @@ const App = () => (
     </UserProvider>
   </QueryClientProvider>
 );
-
 
 export default App;

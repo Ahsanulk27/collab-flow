@@ -40,3 +40,8 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Keep Jitsi features enabled but hide toolbar UI */
+div[class*="toolbox"] {
+  display: none !important;
+}
