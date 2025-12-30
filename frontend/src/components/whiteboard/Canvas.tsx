@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Stage, Layer, Rect, Ellipse, Line, Text } from "react-konva";
+import { Stage, Layer, Rect, Ellipse, Line, Text, Image as KonvaImage } from "react-konva";
 import Konva from "konva";
 import { Shape, Tool } from "@/types/whiteboard";
 import { v4 as uuidv4 } from "uuid";
@@ -10,12 +10,14 @@ interface CanvasProps {
   tool: Tool;
   color: string;
   onActionEnd: (updatedElements?: Shape[]) => void;
+  selectedIcon?: string | null;
 }
 
-export const Canvas = ({ elements, setElements, tool, color, onActionEnd }: CanvasProps) => {
+export const Canvas = ({ elements, setElements, tool, color, onActionEnd, selectedIcon }: CanvasProps) => {
   const isDrawing = useRef(false);
   const [textArea, setTextArea] = useState<{ x: number; y: number; width: number; height: number; id: string } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const iconImageRefs = useRef<Map<string, HTMLImageElement>>(new Map());
 
   useEffect(() => {
     if (textArea && textareaRef.current) {
@@ -23,22 +25,90 @@ export const Canvas = ({ elements, setElements, tool, color, onActionEnd }: Canv
     }
   }, [textArea]);
 
-  const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (tool === "select" || tool === "eraser" || textArea) return;
+ 
+  const convertIconToImage = (iconName: string, iconColor: string, width: number, height: number): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const cacheKey = `${iconName}-${iconColor}-${width}-${height}`;
+      
+      // Check cache
+      if (iconImageRefs.current.has(cacheKey)) {
+        resolve(iconImageRefs.current.get(cacheKey)!);
+        return;
+      }
 
+   
+      fetch(`https://api.iconify.design/${iconName}.svg?color=${encodeURIComponent(iconColor)}`)
+        .then(res => res.text())
+        .then(svgText => {
+          const img = new window.Image();
+          const blob = new Blob([svgText], { type: 'image/svg+xml' });
+          const url = URL.createObjectURL(blob);
+          
+          img.onload = () => {
+            iconImageRefs.current.set(cacheKey, img);
+            resolve(img);
+          };
+          
+          img.onerror = () => {
+            reject(new Error('Failed to load icon'));
+          };
+          
+          img.src = url;
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  };
+
+  const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    // Handle icon placement FIRST - must be checked before other conditions
+    if (tool === "icon" && selectedIcon) {
+      console.log("Placing icon:", selectedIcon, "Tool:", tool); // Debug
+      const stage = e.target.getStage();
+      const pos = stage?.getPointerPosition();
+      if (pos) {
+        const id = uuidv4();
+        const newIcon: Shape = {
+          id,
+          type: "icon",
+          x: pos.x,
+          y: pos.y,
+          width: 50,
+          height: 50,
+          stroke: color,
+          strokeWidth: 0,
+          iconName: selectedIcon,
+          iconColor: color,
+        };
+        console.log("Created icon shape:", newIcon); // Debug
+        setElements([...elements, newIcon]);
+        onActionEnd([...elements, newIcon]);
+      } else {
+        console.log("No position found"); // Debug
+      }
+      return; // Important: return after placing icon
+    }
+
+    // Handle other non-drawing tools
+    if (tool === "select" || tool === "eraser" || textArea) {
+      return;
+    }
+
+    // Handle drawing tools (pencil, rectangle, ellipse, text)
     isDrawing.current = true;
     const stage = e.target.getStage();
-    const pos = stage.getPointerPosition();
+    const pos = stage?.getPointerPosition();
     const id = uuidv4();
 
     const newShape: Shape = {
       id,
       type: tool,
-      x: pos.x || 0,
-      y: pos.y || 0,
+      x: pos?.x || 0,
+      y: pos?.y || 0,
       width: 0,
       height: 0,
-      points: tool === "pencil" ? [pos.x || 0, pos.y || 0] : undefined,
+      points: tool === "pencil" ? [pos?.x || 0, pos?.y || 0] : undefined,
       stroke: color,
       strokeWidth: 2,
       text: tool === "text" ? "" : undefined,
@@ -48,7 +118,7 @@ export const Canvas = ({ elements, setElements, tool, color, onActionEnd }: Canv
   };
 
   const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (!isDrawing.current || tool === "select" || tool === "eraser") return;
+    if (!isDrawing.current || tool === "select" || tool === "eraser" || tool === "icon") return;
 
     const stage = e.target.getStage();
     const point = stage.getPointerPosition();
@@ -128,6 +198,46 @@ export const Canvas = ({ elements, setElements, tool, color, onActionEnd }: Canv
       setTextArea(null);
   };
 
+  
+  const IconImage = ({ element }: { element: Shape }) => {
+    const [img, setImg] = useState<HTMLImageElement | null>(null);
+
+    useEffect(() => {
+      if (element.iconName) {
+        const iconColor = element.iconColor || element.stroke || "#000000";
+        convertIconToImage(element.iconName, iconColor, element.width || 50, element.height || 50)
+          .then(setImg)
+          .catch(console.error);
+      }
+    }, [element.iconName, element.iconColor, element.width, element.height, element.stroke]);
+
+    if (!img) return null;
+
+    return (
+      <KonvaImage
+        image={img}
+        x={element.x}
+        y={element.y}
+        width={element.width || 50}
+        height={element.height || 50}
+        onClick={() => handleShapeClick(element.id)}
+        onTap={() => handleShapeClick(element.id)}
+        onMouseEnter={(e) => {
+          if (tool === "eraser") {
+            const container = e.target.getStage()?.container();
+            if (container) container.style.cursor = "not-allowed";
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (tool === "eraser") {
+            const container = e.target.getStage()?.container();
+            if (container) container.style.cursor = "crosshair";
+          }
+        }}
+      />
+    );
+  };
+
   return (
     <>
     <Stage
@@ -140,9 +250,14 @@ export const Canvas = ({ elements, setElements, tool, color, onActionEnd }: Canv
     >
       <Layer>
         {elements.map((element) => {
-          // Don't render the text element while we are editing it (it's just a placeholder rect or empty)
+          
+          if (element.type === "icon" && element.iconName) {
+            return <IconImage key={element.id} element={element} />;
+          }
+
+      
           if (element.type === "text" && textArea?.id === element.id) {
-              // Render a placeholder rectangle while drawing/editing
+          
               return (
                 <Rect
                     key={element.id}

@@ -1,6 +1,6 @@
 import { Tool } from "../../types/whiteboard";
 import { Button } from "../ui/button";
-import { Pencil, Square, Circle, Type, MousePointer2, Eraser, Undo, Redo } from "lucide-react";
+import { Pencil, Square, Circle, Type, MousePointer2, Eraser, Undo, Redo, Image } from "lucide-react";
 
 interface ToolbarProps {
   activeTool: Tool;
@@ -11,6 +11,7 @@ interface ToolbarProps {
   canRedo: boolean;
   color: string;
   setColor: (color: string) => void;
+  onIconToolClick?: () => void;
 }
 
 const COLORS = [
@@ -22,7 +23,7 @@ const COLORS = [
   "#A855F7", // Purple
 ];
 
-export const Toolbar = ({ activeTool, setTool, undo, redo, canUndo, canRedo, color, setColor }: ToolbarProps) => {
+export const Toolbar = ({ activeTool, setTool, undo, redo, canUndo, canRedo, color, setColor, onIconToolClick }: ToolbarProps) => {
   return (
     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white shadow-md rounded-lg p-2 flex flex-col gap-2 z-10 border items-center">
       <div className="flex gap-2">
@@ -65,6 +66,17 @@ export const Toolbar = ({ activeTool, setTool, undo, redo, canUndo, canRedo, col
           title="Text"
         >
           <Type className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={activeTool === "icon" ? "default" : "ghost"}
+          size="icon"
+          onClick={() => {
+            setTool("icon");
+            onIconToolClick?.();
+          }}
+          title="Icon"
+        >
+          <Image className="h-4 w-4" />
         </Button>
         <Button
           variant={activeTool === "eraser" ? "default" : "ghost"}

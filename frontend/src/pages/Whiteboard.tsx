@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Canvas } from "@/components/whiteboard/Canvas";
 import { Toolbar } from "@/components/whiteboard/Toolbar";
+import { IconSearch } from "@/components/whiteboard/IconSearch";
 import { Shape, Tool, Page } from "@/types/whiteboard";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
@@ -17,7 +18,6 @@ const Whiteboard = () => {
   const [pages, setPages] = useState<Page[]>([{ id: "1", elements: [] }]);
   const [activePageId, setActivePageId] = useState<string>("1");
 
-  // History per page: pageId -> { stack: Shape[][], step: number }
   const [history, setHistory] = useState<
     Record<string, { stack: Shape[][]; step: number }>
   >({
@@ -27,14 +27,15 @@ const Whiteboard = () => {
   const [tool, setTool] = useState<Tool>("select");
   const [color, setColor] = useState("#000000");
   const [loading, setLoading] = useState(true);
+
+  const [showIconSearch, setShowIconSearch] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
 
-  // Derived state for current page elements
   const activePage = pages.find((p) => p.id === activePageId) || pages[0];
   const elements = activePage.elements;
 
-  // Socket connection
   useEffect(() => {
     if (!socket || !workspaceId) return;
 
@@ -64,7 +65,6 @@ const Whiteboard = () => {
     };
   }, [socket, workspaceId]);
 
-  // Load initial data
   useEffect(() => {
     const fetchWhiteboard = async () => {
       try {
@@ -163,6 +163,16 @@ const Whiteboard = () => {
     });
 
     updatePageElements(elementsToSave, true, true);
+
+    if (tool === "icon" && selectedIcon) {
+      setSelectedIcon(null);
+    }
+  };
+
+  const handleIconSelect = (iconName: string) => {
+    console.log("Icon selected:", iconName); // Debug
+    setSelectedIcon(iconName);
+    setShowIconSearch(false);
   };
 
   const undo = () => {
@@ -214,7 +224,7 @@ const Whiteboard = () => {
     const updatedPages = pages.filter((p) => p.id !== activePageId);
     setPages(updatedPages);
     setActivePageId(updatedPages[0].id);
-    // Clean up history
+
     const newHistory = { ...history };
     delete newHistory[activePageId];
     setHistory(newHistory);
@@ -259,6 +269,23 @@ const Whiteboard = () => {
           canRedo={canRedo}
           color={color}
           setColor={setColor}
+          onIconToolClick={() => setShowIconSearch(true)}
+        />
+
+        {showIconSearch && (
+          <IconSearch
+            onSelectIcon={handleIconSelect}
+            onClose={() => setShowIconSearch(false)}
+          />
+        )}
+
+        <Canvas
+          elements={elements}
+          setElements={handleElementsChange}
+          tool={tool}
+          color={color}
+          onActionEnd={handleActionEnd}
+          selectedIcon={selectedIcon}
         />
 
         <Canvas
