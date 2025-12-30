@@ -1,4 +1,4 @@
-export type Tool = 'select' | 'pencil' | 'rectangle' | 'ellipse' | 'text' | 'eraser';
+export type Tool = 'select' | 'pencil' | 'rectangle' | 'ellipse' | 'text' | 'eraser' | 'icon';
 
 export interface Shape {
   id: string;
@@ -12,6 +12,9 @@ export interface Shape {
   fill?: string;
   stroke: string;
   strokeWidth: number;
+
+  iconName?: string;      
+  iconColor?: string;     
 }
 
 export interface Page {
