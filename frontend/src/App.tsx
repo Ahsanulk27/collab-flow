@@ -9,10 +9,9 @@ import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import WorkspaceOverview from "./pages/workspaceOverview";
 import ChatPage from "./pages/chatPage";
+import Whiteboard from "./pages/Whiteboard";
+import Profile from "./pages/profile";
 import TaskBoard from "./pages/TaskBoard";
-// import Whiteboard from "./pages/Whiteboard";
-// import ProfilePage from "./pages/ProfilePage";
-// import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AddWorkspace from "./pages/addWorkspace";
 
@@ -33,12 +32,10 @@ const App = () => (
             <Route path="/workspaces/:workspaceId" element={<WorkspaceOverview />} />
             <Route path="/addWorkspace" element={<AddWorkspace/>}/>
             <Route path="/workspaces/:workspaceId/chat" element={<ChatPage />} />
+            <Route path="/workspaces/:workspaceId/whiteboard" element={<Whiteboard />} />
             <Route path="/workspaces/:workspaceId/tasks" element={<TaskBoard />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
-          {/* 
-          <Route path="/whiteboard" element={<Whiteboard />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          */}
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           {/* <Route path="*" element={<NotFound />} /> */}
