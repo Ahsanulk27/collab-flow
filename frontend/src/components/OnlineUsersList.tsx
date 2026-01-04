@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useSocket } from '../hooks/use-socket';
-import OnlineIndicator from './onlineIndicator';
+import { useEffect, useState } from "react";
+import { useSocket } from "../hooks/use-socket";
+import OnlineIndicator from "./onlineIndicator";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface User {
   id: string;
@@ -12,6 +13,9 @@ interface OnlineUsersListProps {
   workspaceId: string;
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+const BACKEND_URL = API_BASE.replace("/api/v1", "");
+
 const OnlineUsersList = ({ workspaceId }: OnlineUsersListProps) => {
   const { socket, isConnected } = useSocket();
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
@@ -19,18 +23,15 @@ const OnlineUsersList = ({ workspaceId }: OnlineUsersListProps) => {
   useEffect(() => {
     if (!socket || !isConnected) return;
 
-    
-    socket.emit('joinWorkspace', workspaceId);
+    socket.emit("joinWorkspace", workspaceId);
 
-    
-    socket.on('onlineUsers', (users: User[]) => {
-      console.log('Received online users:', users);
+    socket.on("onlineUsers", (users: User[]) => {
+      console.log("Received online users:", users);
       setOnlineUsers(users);
     });
 
-    
     return () => {
-      socket.off('onlineUsers');
+      socket.off("onlineUsers");
     };
   }, [socket, isConnected, workspaceId]);
 
@@ -44,25 +45,33 @@ const OnlineUsersList = ({ workspaceId }: OnlineUsersListProps) => {
 
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-semibold text-gray-700">Online Now ({onlineUsers.length})</h3>
+      <h3 className="text-sm font-semibold text-gray-700">
+        Online Now ({onlineUsers.length})
+      </h3>
       <div className="space-y-1">
         {onlineUsers.map((user) => (
-          <div key={user.id} className="flex items-center gap-2 p-2 rounded hover:bg-gray-50">
+          <div
+            key={user.id}
+            className="flex items-center gap-2 p-2 rounded hover:bg-gray-50"
+          >
             <OnlineIndicator isOnline={true} className="" />
             <div className="flex items-center gap-2">
-              {user.profileImage ? (
-                <img
-                  src={user.profileImage}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full"
+              <Avatar className="h-10 w-10">
+                <AvatarImage
+                  src={
+                    user.profileImage
+                      ? `${BACKEND_URL}${user.profileImage}`
+                      : undefined
+                  }
                 />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                  <span className="text-sm font-semibold text-gray-600">
-                    {user.name.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
+                <AvatarFallback>
+                  {user.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
               <span className="text-sm font-medium">{user.name}</span>
             </div>
           </div>
