@@ -10,7 +10,7 @@ import OnlineIndicator from "@/components/onlineIndicator";
 import { Send, Paperclip, Hash, Loader2 } from "lucide-react";
 import { useSocket } from "@/hooks/use-socket";
 import { jwtDecode } from "jwt-decode";
-
+import OnlineUsersList from "@/components/OnlineUsersList";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const BACKEND_URL = API_BASE.replace("/api/v1", "");
 
@@ -257,6 +257,11 @@ const ChatPage = () => {
             </form>
           </div>
         </Card>
+
+        <Card variant="glass-solid" className="w-80 p-4 overflow-y-auto">
+          {workspaceId && <OnlineUsersList workspaceId={workspaceId} />}
+        </Card>
+        
       </div>
     </DashboardLayout>
   );

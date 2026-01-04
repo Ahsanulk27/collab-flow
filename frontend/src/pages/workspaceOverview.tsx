@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { MessageSender, Message } from "@/types/message";
 import { useSocket } from "@/hooks/use-socket";
-
+import OnlineUsersList from "@/components/OnlineUsersList";
 interface Member {
   id: string;
   role: "OWNER" | "MEMBER";
@@ -287,6 +287,15 @@ const WorkspaceOverview = () => {
                 </div>
               </div>
             ))}
+          </CardContent>
+        </Card>
+
+        <Card variant="glass-solid" className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-lg">Online Now</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {workspaceId && <OnlineUsersList workspaceId={workspaceId} />}
           </CardContent>
         </Card>
 

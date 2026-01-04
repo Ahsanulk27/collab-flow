@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import { prisma } from "./config/db";
 import { handleChatEvents } from "./sockets/chat";
 import { handleWhiteboardEvents } from "./sockets/whiteboard";
+import { handleUserPresence } from "./sockets/userPresence";
 import jwt from "jsonwebtoken";
 
 const PORT = process.env.PORT;
@@ -41,7 +42,7 @@ io.on("connection", (socket) => {
 
   handleChatEvents(socket, io);
   handleWhiteboardEvents(socket, io);
-
+  handleUserPresence(socket, io);
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
