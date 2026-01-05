@@ -7,13 +7,13 @@ import { handleWhiteboardEvents } from "./sockets/whiteboard";
 import { handleUserPresence } from "./sockets/userPresence";
 import jwt from "jsonwebtoken";
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 1045;
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:8080",
+    origin: `${process.env.FRONTEND_URL}`,
     methods: ["GET", "POST"],
     credentials: true,
   },

@@ -27,7 +27,7 @@ interface CanvasProps {
   selectedIcon?: string | null;
 }
 
-// Custom Cursor SVG Strings
+// Custom Cursor SVG
 const CURSORS = {
   pencil: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>') 0 20, auto`,
   eraser: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21Z"/><path d="m22 21H7"/><path d="m5 11 9 9"/></svg>') 0 20, auto`,
@@ -66,7 +66,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const stageRef = useRef<Konva.Stage>(null);
 
-    // --- NEW: Global Cursor Logic ---
     useEffect(() => {
       const stage = stageRef.current;
       if (!stage) return;
