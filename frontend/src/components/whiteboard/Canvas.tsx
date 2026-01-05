@@ -27,6 +27,16 @@ interface CanvasProps {
   selectedIcon?: string | null;
 }
 
+// Custom Cursor SVG Strings
+const CURSORS = {
+  pencil: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>') 0 20, auto`,
+  eraser: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21Z"/><path d="m22 21H7"/><path d="m5 11 9 9"/></svg>') 0 20, auto`,
+  select: "default",
+  move: "grab",
+  text: "text",
+  crosshair: "crosshair",
+};
+
 export interface CanvasHandle {
   exportImage: () => void;
 }
@@ -56,6 +66,34 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const stageRef = useRef<Konva.Stage>(null);
 
+    // --- NEW: Global Cursor Logic ---
+    useEffect(() => {
+      const stage = stageRef.current;
+      if (!stage) return;
+      const container = stage.container();
+
+      switch (tool) {
+        case "pencil":
+          container.style.cursor = CURSORS.pencil;
+          break;
+        case "eraser":
+          container.style.cursor = CURSORS.eraser;
+          break;
+        case "select":
+          container.style.cursor = CURSORS.select;
+          break;
+        case "text":
+          container.style.cursor = CURSORS.text;
+          break;
+        case "rectangle":
+        case "ellipse":
+          container.style.cursor = CURSORS.crosshair;
+          break;
+        default:
+          container.style.cursor = "default";
+      }
+    }, [tool]);
+
     useEffect(() => {
       if (textArea && textareaRef.current) {
         textareaRef.current.focus();
@@ -70,8 +108,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
     ): Promise<HTMLImageElement> => {
       return new Promise((resolve, reject) => {
         const cacheKey = `${iconName}-${iconColor}-${width}-${height}`;
-
-        // Check cache
         if (iconImageRefs.current.has(cacheKey)) {
           resolve(iconImageRefs.current.get(cacheKey)!);
           return;
@@ -87,28 +123,19 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
             const img = new window.Image();
             const blob = new Blob([svgText], { type: "image/svg+xml" });
             const url = URL.createObjectURL(blob);
-
             img.onload = () => {
               iconImageRefs.current.set(cacheKey, img);
               resolve(img);
             };
-
-            img.onerror = () => {
-              reject(new Error("Failed to load icon"));
-            };
-
+            img.onerror = () => reject(new Error("Failed to load icon"));
             img.src = url;
           })
-          .catch((err) => {
-            reject(err);
-          });
+          .catch(reject);
       });
     };
 
     const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
-      // Handle icon placement FIRST - must be checked before other conditions
       if (tool === "icon" && selectedIcon) {
-        console.log("Placing icon:", selectedIcon, "Tool:", tool); // Debug
         const stage = e.target.getStage();
         const pos = stage?.getPointerPosition();
         if (pos) {
@@ -125,21 +152,14 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
             iconName: selectedIcon,
             iconColor: color,
           };
-          console.log("Created icon shape:", newIcon); // Debug
           setElements([...elements, newIcon]);
           onActionEnd([...elements, newIcon]);
-        } else {
-          console.log("No position found"); // Debug
         }
-        return; // Important: return after placing icon
-      }
-
-      // Handle other non-drawing tools
-      if (tool === "select" || tool === "eraser" || textArea) {
         return;
       }
 
-      // Handle drawing tools (pencil, rectangle, ellipse, text)
+      if (tool === "select" || tool === "eraser" || textArea) return;
+
       isDrawing.current = true;
       const stage = e.target.getStage();
       const pos = stage?.getPointerPosition();
@@ -172,43 +192,36 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
 
       const stage = e.target.getStage();
       const point = stage.getPointerPosition();
+      if (!point) return;
 
       const lastElement = elements[elements.length - 1];
       const index = elements.length - 1;
 
       if (tool === "pencil") {
-        // Append points to the line
-        const newPoints = lastElement.points!.concat([
-          point.x || 0,
-          point.y || 0,
-        ]);
+        const newPoints = lastElement.points!.concat([point.x, point.y]);
         const newElements = [...elements];
         newElements[index] = { ...lastElement, points: newPoints };
         setElements(newElements);
       } else {
-        // Update width/height for shapes
         const newElements = [...elements];
         newElements[index] = {
           ...lastElement,
-          width: (point.x || 0) - lastElement.x,
-          height: (point.y || 0) - lastElement.y,
+          width: point.x - lastElement.x,
+          height: point.y - lastElement.y,
         };
         setElements(newElements);
       }
     };
 
-    function downloadURI(uri: string, name: string) {
+    const handleExport = () => {
+      if (!stageRef.current) return;
+      const uri = stageRef.current.toDataURL({ pixelRatio: 2 });
       const link = document.createElement("a");
-      link.download = name;
+      link.download = "whiteboard.png";
       link.href = uri;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }
-    const handleExport = () => {
-      if (!stageRef.current) return;
-      const uri = stageRef.current.toDataURL({ pixelRatio: 2 }); // optional higher-res
-      downloadURI(uri, "whiteboard.png");
     };
 
     useImperativeHandle(ref, () => ({
@@ -219,7 +232,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
       if (isDrawing.current) {
         if (tool === "text") {
           const lastElement = elements[elements.length - 1];
-          // If width/height is too small, set a default size
           const width =
             Math.abs(lastElement.width || 0) < 20 ? 100 : lastElement.width;
           const height =
@@ -245,38 +257,27 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
         setElements(newElements);
         onActionEnd(newElements);
       }
-      if (tool === "select") {
-        setSelectedId(id);
-      }
+      if (tool === "select") setSelectedId(id);
     };
 
     const handleTextComplete = () => {
       if (!textArea || !textareaRef.current) return;
-
       const text = textareaRef.current.value;
-      let newElements = elements;
-
+      let newElements;
       if (!text.trim()) {
-        // Remove empty text element
         newElements = elements.filter((el) => el.id !== textArea.id);
-        setElements(newElements);
       } else {
-        // Update text content
-        newElements = elements.map((el) => {
-          if (el.id === textArea.id) {
-            return { ...el, text };
-          }
-          return el;
-        });
-        setElements(newElements);
+        newElements = elements.map((el) =>
+          el.id === textArea.id ? { ...el, text } : el
+        );
       }
+      setElements(newElements);
       onActionEnd(newElements);
       setTextArea(null);
     };
 
     const IconImage = ({ element }: { element: Shape }) => {
       const [img, setImg] = useState<HTMLImageElement | null>(null);
-
       useEffect(() => {
         if (element.iconName) {
           const iconColor = element.iconColor || element.stroke || "#000000";
@@ -298,7 +299,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
       ]);
 
       if (!img) return null;
-
       return (
         <KonvaImage
           image={img}
@@ -316,19 +316,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
             setElements(newElements);
             onActionEnd(newElements);
           }}
-          onTap={() => handleShapeClick(element.id)}
-          onMouseEnter={(e) => {
-            if (tool === "eraser") {
-              const container = e.target.getStage()?.container();
-              if (container) container.style.cursor = "not-allowed";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (tool === "eraser") {
-              const container = e.target.getStage()?.container();
-              if (container) container.style.cursor = "crosshair";
-            }
-          }}
         />
       );
     };
@@ -340,21 +327,17 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
           width={window.innerWidth}
           height={window.innerHeight}
           onMouseDown={(e) => {
-            if (e.target === e.target.getStage()) {
-              setSelectedId(null);
-            }
+            if (e.target === e.target.getStage()) setSelectedId(null);
             handleMouseDown(e);
           }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
-          className="bg-gray-50 cursor-crosshair"
+          className="bg-gray-50"
         >
           <Layer>
             {elements.map((element) => {
-              if (element.type === "icon" && element.iconName) {
+              if (element.type === "icon" && element.iconName)
                 return <IconImage key={element.id} element={element} />;
-              }
-
               if (element.type === "text" && textArea?.id === element.id) {
                 return (
                   <Rect
@@ -371,48 +354,26 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
               }
 
               const commonProps = {
-                onClick: () => {
-                  if (tool === "eraser") {
-                    handleShapeClick(element.id);
-                  }
-                },
-                onMouseDown: (e) => {
+                onClick: () =>
+                  tool === "eraser" && handleShapeClick(element.id),
+                onMouseDown: (e: any) => {
                   if (tool === "select") {
                     e.cancelBubble = true;
                     setSelectedId(element.id);
                   }
                 },
-                onTap: () => {
-                  if (tool === "select") {
-                    setSelectedId(element.id);
-                  }
-                },
                 draggable: tool === "select" && selectedId === element.id,
-                onDragEnd: (e: Konva.KonvaEventObject<DragEvent>) => {
+                onDragEnd: (e: any) => {
                   const { x, y } = e.target.position();
-
                   const newElements = elements.map((el) =>
                     el.id === element.id ? { ...el, x, y } : el
                   );
-
                   setElements(newElements);
                   onActionEnd(newElements);
                 },
-                onMouseEnter: (e: Konva.KonvaEventObject<MouseEvent>) => {
-                  if (tool === "eraser") {
-                    const container = e.target.getStage()?.container();
-                    if (container) container.style.cursor = "not-allowed";
-                  }
-                },
-                onMouseLeave: (e: Konva.KonvaEventObject<MouseEvent>) => {
-                  if (tool === "eraser") {
-                    const container = e.target.getStage()?.container();
-                    if (container) container.style.cursor = "crosshair";
-                  }
-                },
               };
 
-              if (element.type === "rectangle") {
+              if (element.type === "rectangle")
                 return (
                   <Rect
                     key={element.id}
@@ -429,21 +390,15 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
                     }
                   />
                 );
-              }
-              if (element.type === "ellipse") {
-                const radiusX = Math.abs(element.width || 0) / 2;
-                const radiusY = Math.abs(element.height || 0) / 2;
-                const centerX = element.x + (element.width || 0) / 2;
-                const centerY = element.y + (element.height || 0) / 2;
-
+              if (element.type === "ellipse")
                 return (
                   <Ellipse
                     key={element.id}
                     {...commonProps}
-                    x={centerX}
-                    y={centerY}
-                    radiusX={radiusX}
-                    radiusY={radiusY}
+                    x={element.x + (element.width || 0) / 2}
+                    y={element.y + (element.height || 0) / 2}
+                    radiusX={Math.abs(element.width || 0) / 2}
+                    radiusY={Math.abs(element.height || 0) / 2}
                     stroke={
                       selectedId === element.id ? "#2563eb" : element.stroke
                     }
@@ -452,8 +407,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
                     }
                   />
                 );
-              }
-              if (element.type === "pencil") {
+              if (element.type === "pencil")
                 return (
                   <Line
                     key={element.id}
@@ -468,8 +422,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
                     hitStrokeWidth={15}
                   />
                 );
-              }
-              if (element.type === "text") {
+              if (element.type === "text")
                 return (
                   <Text
                     key={element.id}
@@ -484,7 +437,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
                     width={element.width}
                   />
                 );
-              }
               return null;
             })}
           </Layer>
@@ -492,7 +444,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
         {textArea && (
           <textarea
             ref={textareaRef}
-            value={undefined} // Uncontrolled for simplicity, or bind to state if needed
             onBlur={handleTextComplete}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -508,13 +459,10 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(
               height: textArea.height,
               fontSize: "20px",
               border: "1px dashed #000",
-              margin: 0,
-              padding: 0,
               background: "transparent",
               outline: "none",
               resize: "none",
-              overflow: "hidden",
-              zIndex: 100, // Ensure it's above the canvas
+              zIndex: 100,
             }}
           />
         )}
