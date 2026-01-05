@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Canvas } from "@/components/whiteboard/Canvas";
+import { Canvas, CanvasHandle } from "@/components/whiteboard/Canvas";
 import { Toolbar } from "@/components/whiteboard/Toolbar";
 import { IconSearch } from "@/components/whiteboard/IconSearch";
 import { Shape, Tool, Page } from "@/types/whiteboard";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Plus, Trash2, Users } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Trash2,
+  Users,
+  Download,
+  Settings2,
+} from "lucide-react";
 import { useSocket } from "@/hooks/use-socket";
 import DashboardLayout from "@/components/DashboardLayout";
 
@@ -42,6 +50,7 @@ const Whiteboard = () => {
 
   const activePage = pages.find((p) => p.id === activePageId) || pages[0];
   const elements = activePage.elements;
+  const canvasRef = useRef<CanvasHandle | null>(null);
 
   useEffect(() => {
     if (!socket || !workspaceId) return;
@@ -55,7 +64,6 @@ const Whiteboard = () => {
         )
       );
 
-      
       setHistory((prevHistory) => {
         const currentHistory = prevHistory[pageId] || { stack: [[]], step: 0 };
         const newStack = [...currentHistory.stack, newElements];
@@ -65,7 +73,6 @@ const Whiteboard = () => {
         };
       });
     });
-
 
     socket.on("whiteboard-active-users", (users: ActiveUser[]) => {
       setActiveUsers(users);
@@ -86,12 +93,11 @@ const Whiteboard = () => {
         });
         if (res.data && res.data.elements) {
           const data = res.data.elements;
-          
+
           if (Array.isArray(data) && data.length > 0 && "elements" in data[0]) {
-      
             setPages(data as Page[]);
             setActivePageId(data[0].id);
-            
+
             const initialHistory: Record<
               string,
               { stack: Shape[][]; step: number }
@@ -101,7 +107,6 @@ const Whiteboard = () => {
             });
             setHistory(initialHistory);
           } else {
-    
             const initialPage: Page = { id: "1", elements: data as Shape[] };
             setPages([initialPage]);
             setActivePageId("1");
@@ -161,7 +166,7 @@ const Whiteboard = () => {
   };
 
   const handleElementsChange = (newElements: Shape[]) => {
-    updatePageElements(newElements, false, true); 
+    updatePageElements(newElements, false, true);
   };
 
   const handleActionEnd = (updatedElements?: Shape[]) => {
@@ -273,34 +278,58 @@ const Whiteboard = () => {
   return (
     <DashboardLayout>
       <div className="relative w-full h-screen overflow-hidden bg-gray-100">
-        {/* Active Users Panel */}
-        <div className="absolute top-4 right-4 bg-white shadow-md rounded-lg px-2 py-1.5 z-20 flex flex-col gap-1.5">
-          <div className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5 text-gray-600" />
-            <span className="text-xs font-medium text-gray-700">Active Users:</span>
+        {/* 1. TOP-RIGHT PANEL: Actions and Collaboration */}
+        <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-3">
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <Button
+              onClick={() => canvasRef.current?.exportImage()}
+              variant="outline"
+              className="shadow-sm bg-white hover:bg-gray-50 text-gray-700 border-gray-200 flex gap-2 items-center h-9"
+            >
+              <Download className="h-4 w-4 text-blue-600" />
+              <span className="font-medium text-xs">Export</span>
+            </Button>
           </div>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {activeUsers.length === 0 ? (
-              <span className="text-xs text-gray-500">No active users</span>
-            ) : (
-              activeUsers.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center gap-1.5"
-                  title={user.name || user.email}
-                >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-semibold">
-                    {(user.name || user.email).charAt(0).toUpperCase()}
-                  </div>
-                  <span className="text-xs text-gray-700">
-                    {user.name || user.email.split("@")[0]}
-                  </span>
+
+          {/* Collaboration / Active Users */}
+          <div className="bg-white/90 backdrop-blur-md shadow-sm rounded-xl p-3 border border-gray-200 min-w-[160px]">
+            <div className="flex items-center gap-2 mb-2 pb-2 border-b border-gray-100">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                Collaborators
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {activeUsers.length === 0 ? (
+                <span className="text-[10px] text-gray-400 italic">
+                  No one else is here
+                </span>
+              ) : (
+                <div className="flex -space-x-2 overflow-hidden">
+                  {activeUsers.map((user) => (
+                    <div
+                      key={user.id}
+                      className="inline-block h-7 w-7 rounded-full ring-2 ring-white bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-[10px] font-bold"
+                      title={user.name || user.email}
+                    >
+                      {(user.name || user.email).charAt(0).toUpperCase()}
+                    </div>
+                  ))}
                 </div>
-              ))
-            )}
+              )}
+              {activeUsers.length > 0 && (
+                <p className="text-[10px] text-gray-400 font-medium">
+                  {activeUsers.length} user{activeUsers.length > 1 ? "s" : ""}{" "}
+                  active
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
+        {/* 2. MAIN TOOLBAR */}
         <Toolbar
           activeTool={tool}
           setTool={setTool}
@@ -313,6 +342,7 @@ const Whiteboard = () => {
           onIconToolClick={() => setShowIconSearch(true)}
         />
 
+        {/* 3. MODALS (Icon Search) */}
         {showIconSearch && (
           <IconSearch
             onSelectIcon={handleIconSelect}
@@ -320,7 +350,9 @@ const Whiteboard = () => {
           />
         )}
 
+        {/* 4. MAIN CANVAS */}
         <Canvas
+          ref={canvasRef}
           elements={elements}
           setElements={handleElementsChange}
           tool={tool}
@@ -329,15 +361,7 @@ const Whiteboard = () => {
           selectedIcon={selectedIcon}
         />
 
-        <Canvas
-          elements={elements}
-          setElements={handleElementsChange}
-          tool={tool}
-          color={color}
-          onActionEnd={handleActionEnd}
-        />
-
-        {/* Page Controls */}
+        {/* 5. PAGE CONTROLS (Bottom Floating) */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white shadow-md rounded-lg p-2 flex gap-2 z-10 border items-center">
           <Button
             variant="ghost"
@@ -347,9 +371,11 @@ const Whiteboard = () => {
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-medium">
+
+          <span className="text-sm font-medium px-2">
             Page {pageIndex + 1} / {pages.length}
           </span>
+
           <Button
             variant="ghost"
             size="icon"
@@ -358,7 +384,9 @@ const Whiteboard = () => {
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
+
           <div className="w-px bg-gray-200 mx-1 h-6" />
+
           <Button
             variant="ghost"
             size="icon"
@@ -367,6 +395,7 @@ const Whiteboard = () => {
           >
             <Plus className="h-4 w-4" />
           </Button>
+
           <Button
             variant="ghost"
             size="icon"
