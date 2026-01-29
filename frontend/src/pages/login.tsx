@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,6 +14,7 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,30 +27,37 @@ const Login = () => {
     }
 
     try {
+      setIsLoading(true);
+
       const res = await axios.post(`${API_BASE}/auth/login`, {
         email,
         password,
         remember,
       });
+
       const token = res.data?.token;
 
       if (!token) {
         setError("Invalid response from server.");
         return;
-      } 
+      }
+
       if (remember) {
         localStorage.setItem("token", token);
       } else {
         sessionStorage.setItem("token", token);
       }
+
       setSuccess("Signed in successfully!");
       navigate("/dashboard");
-    } catch (err) {
+    } catch (err: any) {
       if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
         setError("Unable to sign in. Please try again.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,6 +86,7 @@ const Login = () => {
                 Sign in to continue to CollabFlow and pick up where you left
                 off.
               </p>
+
               <div className="mt-4 space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -99,6 +108,7 @@ const Login = () => {
                     </p>
                   </div>
                 </div>
+
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <svg
@@ -167,8 +177,16 @@ const Login = () => {
               </div>
 
               <div className="pt-2">
-                <Button type="submit" variant="teal" className="w-full">
-                  Sign in
+                <Button
+                  type="submit"
+                  variant="teal"
+                  className="w-full flex items-center justify-center gap-2"
+                  disabled={isLoading}
+                >
+                  {isLoading && (
+                    <span className="h-4 w-4 rounded-full border-2 border-white/60 border-t-transparent animate-spin" />
+                  )}
+                  {isLoading ? "Signing in..." : "Sign in"}
                 </Button>
               </div>
 

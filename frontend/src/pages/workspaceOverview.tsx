@@ -47,7 +47,7 @@ interface Workspace {
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE;
-const BACKEND_URL = API_BASE.replace('/api/v1', '');
+const BACKEND_URL = API_BASE.replace("/api/v1", "");
 
 const WorkspaceOverview = () => {
   const { workspaceId } = useParams();
@@ -266,9 +266,7 @@ const WorkspaceOverview = () => {
                     <AvatarImage
                       src={
                         member.user.profileImage
-                          ? `${BACKEND_URL}${
-                              member.user.profileImage
-                            }`
+                          ? `${BACKEND_URL}${member.user.profileImage}`
                           : undefined
                       }
                     />
@@ -369,6 +367,50 @@ const WorkspaceOverview = () => {
             </Button>
           </CardContent>
         </Card>
+        {/* Total Task Count */}
+        {/* <Card variant="glass-solid" className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-lg">Total Tasks</CardTitle>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            {workspace.tasks.slice(0, 3).length > 0 ? (
+              <div>
+                <div>
+                  <p className="text-sm text-muted-foreground text-center">
+                    {
+                      workspace.tasks
+                        .slice(0, 3)
+                        .filter((task) => task.status === "TODO").length
+                    }
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground text-center">
+                    {
+                      workspace.tasks
+                        .slice(0, 3)
+                        .filter((task) => task.status === "DONE").length
+                    }
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground text-center">
+                    {
+                      workspace.tasks
+                        .slice(0, 3)
+                        .filter((task) => task.status === "IN_PROGRESS").length
+                    }
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center">
+                No tasks yet
+              </p>
+            )}
+          </CardContent>
+        </Card> */}
       </div>
     </DashboardLayout>
   );
