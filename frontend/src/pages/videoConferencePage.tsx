@@ -111,13 +111,13 @@ const VideoConferencePage = () => {
 
   return (
     <DashboardLayout>
-      <div className="h-[calc(100vh-140px)] flex flex-col gap-4 p-2">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={handleLeave}>
+      <div className="min-h-[calc(100vh-12rem)] sm:min-h-[calc(100vh-140px)] flex flex-col gap-3 sm:gap-4 p-2 sm:p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <Button variant="ghost" size="sm" onClick={handleLeave} className="w-fit">
             <ArrowLeft className="w-4 h-4 mr-2" /> Exit Meeting
           </Button>
           {!isLoading && (
-            <div className="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded">
+            <div className="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded w-fit">
               SECURE BRIDGE ACTIVE
             </div>
           )}

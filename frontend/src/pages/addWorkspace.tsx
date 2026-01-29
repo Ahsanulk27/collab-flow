@@ -64,8 +64,8 @@ const AddWorkspace = () => {
   return (
     <div className="min-h-screen bg-aqua-gradient">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
           <Link to="/dashboard" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back to Dashboard</span>
@@ -75,7 +75,7 @@ const AddWorkspace = () => {
       </header>
 
       {/* Main Content */}
-      <main className="pt-24 pb-12 px-6">
+      <main className="pt-20 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto">
           {/* Title */}
           <div className="text-center mb-10">

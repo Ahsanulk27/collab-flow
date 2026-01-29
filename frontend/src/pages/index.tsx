@@ -22,7 +22,7 @@ const Index = () => {
     <div className="min-h-screen bg-hero-gradient overflow-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40 backdrop-blur-xl border-b border-white/30">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 flex-wrap">
           <Logo />
           <div className="hidden md:flex items-center gap-8">
             <a
@@ -38,18 +38,20 @@ const Index = () => {
               For Teams
             </a>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild>
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
               <Link to="/dashboard">Contact Us</Link>
             </Button>
 
             {isLoggedIn ? (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" asChild>
                   <Link to="/dashboard">Dashboard</Link>
                 </Button>
                 <Button
                   variant="outline"
+                  size="sm"
+                  className="text-xs sm:text-sm"
                   onClick={() => {
                     localStorage.removeItem("token");
                     sessionStorage.removeItem("token");
@@ -61,10 +63,10 @@ const Index = () => {
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" asChild>
                   <Link to="/login">Sign In</Link>
                 </Button>
-                <Button variant="teal" asChild>
+                <Button variant="teal" size="sm" className="text-xs sm:text-sm" asChild>
                   <Link to="/signup">Sign Up</Link>
                 </Button>
               </>
@@ -74,12 +76,12 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             {/* Left side - Copy */}
-            <div className="space-y-8 animate-fade-in-up">
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight">
+            <div className="space-y-6 sm:space-y-8 animate-fade-in-up">
+              <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight">
                 Where ideas <span className="text-gradient-teal">flow</span>{" "}
                 freely
               </h1>
@@ -207,9 +209,9 @@ const Index = () => {
       </div>
 
       {/* Real-time section */}
-      <section id="features" className="py-24 px-6 bg-white/60">
+      <section id="features" className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 bg-white/60">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
             <div className="space-y-6">
               <Badge variant="teal" className="uppercase tracking-wider">
                 Live Collaboration
@@ -283,9 +285,9 @@ const Index = () => {
       </section>
 
       {/* Everything you need section */}
-      <section className="py-24 px-6 bg-hero-gradient">
+      <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 bg-hero-gradient">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
             <Card variant="glass-solid" className="p-6 order-2 lg:order-1">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-3 h-3 rounded-full bg-rose-400" />
@@ -326,18 +328,18 @@ const Index = () => {
       </section>
 
       {/* Built for creators section */}
-      <section id="teams" className="py-24 px-6 bg-white/60">
+      <section id="teams" className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 bg-white/60">
         <div className="container mx-auto text-center">
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6">
             Built for <span className="text-gradient-teal">creators</span> and
             teams
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-16">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 sm:mb-16">
             Experience a workspace that adapts to how you think – not the other
             way around.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 icon: Zap,
@@ -373,9 +375,9 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-6 bg-hero-gradient">
+      <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 bg-hero-gradient">
         <div className="container mx-auto text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-8">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-6 sm:mb-8">
             Start Creating Today
           </h2>
           <Button variant="teal" size="xl" asChild className="group">
@@ -388,8 +390,8 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-white/60 border-t border-white/30">
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <footer className="py-8 sm:py-12 px-4 sm:px-6 bg-white/60 border-t border-white/30">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-center md:text-left">
           <Logo />
           <p className="text-sm text-muted-foreground">
             Built for the way you work.

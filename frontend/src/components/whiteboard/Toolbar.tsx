@@ -25,8 +25,8 @@ const COLORS = [
 
 export const Toolbar = ({ activeTool, setTool, undo, redo, canUndo, canRedo, color, setColor, onIconToolClick }: ToolbarProps) => {
   return (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white shadow-md rounded-lg p-2 flex flex-col gap-2 z-10 border items-center">
-      <div className="flex gap-2">
+    <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 bg-white shadow-md rounded-lg p-1.5 sm:p-2 flex flex-col gap-1.5 sm:gap-2 z-10 border items-center max-w-[calc(100vw-1rem)] sm:max-w-none">
+      <div className="flex gap-1 sm:gap-2 overflow-x-auto w-full justify-center pb-1 sm:pb-0 scrollbar-thin [&::-webkit-scrollbar]:h-1">
         <Button
           variant={activeTool === "select" ? "default" : "ghost"}
           size="icon"

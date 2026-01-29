@@ -180,26 +180,26 @@ const WorkspaceOverview = () => {
           </Link>
         </Button>
 
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="text-4xl">🗂️</span>
-              <h1 className="font-display text-3xl font-bold text-foreground">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              <span className="text-3xl sm:text-4xl">🗂️</span>
+              <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground break-words">
                 {workspace.name}
               </h1>
             </div>
-            <p className="text-muted-foreground mt-2 max-w-xl">
+            <p className="text-muted-foreground mt-2 max-w-xl text-sm sm:text-base">
               {workspace.description || "No description provided"}
             </p>
           </div>
-          <Badge variant="success" className="text-sm">
+          <Badge variant="success" className="text-sm w-fit flex-shrink-0">
             Active
           </Badge>
         </div>
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
         {quickLinks.map((link) => (
           <Link key={link.label} to={link.path}>
             <Card variant="glass-hover" className="p-4 text-center h-full">

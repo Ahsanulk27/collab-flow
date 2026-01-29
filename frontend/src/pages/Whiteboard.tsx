@@ -277,23 +277,23 @@ const Whiteboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="relative w-full h-screen overflow-hidden bg-gray-100">
+      <div className="relative w-full min-h-[100dvh] sm:h-screen overflow-hidden bg-gray-100">
         {/* 1. TOP-RIGHT PANEL: Actions and Collaboration */}
-        <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-3">
+        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2 sm:gap-3">
           {/* Action Buttons */}
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             <Button
               onClick={() => canvasRef.current?.exportImage()}
               variant="outline"
-              className="shadow-sm bg-white hover:bg-gray-50 text-gray-700 border-gray-200 flex gap-2 items-center h-9"
+              className="shadow-sm bg-white hover:bg-gray-50 text-gray-700 border-gray-200 h-8 w-8 sm:h-9 sm:min-w-[unset] sm:px-2 sm:gap-2 sm:inline-flex sm:items-center"
             >
-              <Download className="h-4 w-4 text-blue-600" />
-              <span className="font-medium text-xs">Export</span>
+              <Download className="h-4 w-4 text-blue-600 flex-shrink-0" />
+              <span className="font-medium text-xs hidden sm:inline">Export</span>
             </Button>
           </div>
 
-          {/* Collaboration / Active Users */}
-          <div className="bg-white/90 backdrop-blur-md shadow-sm rounded-xl p-3 border border-gray-200 min-w-[160px]">
+          {/* Collaboration / Active Users - hidden on small screens to avoid overlap */}
+          <div className="hidden sm:block bg-white/90 backdrop-blur-md shadow-sm rounded-xl p-3 border border-gray-200 min-w-[160px]">
             <div className="flex items-center gap-2 mb-2 pb-2 border-b border-gray-100">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
@@ -362,34 +362,37 @@ const Whiteboard = () => {
         />
 
         {/* 5. PAGE CONTROLS (Bottom Floating) */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white shadow-md rounded-lg p-2 flex gap-2 z-10 border items-center">
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 sm:bottom-4 bg-white shadow-md rounded-lg p-1.5 sm:p-2 flex gap-1 sm:gap-2 z-10 border items-center">
           <Button
             variant="ghost"
             size="icon"
+            className="h-8 w-8 sm:h-9 sm:w-9"
             onClick={prevPage}
             disabled={pageIndex === 0}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
 
-          <span className="text-sm font-medium px-2">
+          <span className="text-xs sm:text-sm font-medium px-1 sm:px-2 whitespace-nowrap">
             Page {pageIndex + 1} / {pages.length}
           </span>
 
           <Button
             variant="ghost"
             size="icon"
+            className="h-8 w-8 sm:h-9 sm:w-9"
             onClick={nextPage}
             disabled={pageIndex === pages.length - 1}
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
 
-          <div className="w-px bg-gray-200 mx-1 h-6" />
+          <div className="w-px bg-gray-200 mx-0.5 sm:mx-1 h-5 sm:h-6" />
 
           <Button
             variant="ghost"
             size="icon"
+            className="h-8 w-8 sm:h-9 sm:w-9"
             onClick={addPage}
             title="Add Page"
           >
@@ -399,6 +402,7 @@ const Whiteboard = () => {
           <Button
             variant="ghost"
             size="icon"
+            className="h-8 w-8 sm:h-9 sm:w-9"
             onClick={deletePage}
             disabled={pages.length <= 1}
             title="Delete Page"

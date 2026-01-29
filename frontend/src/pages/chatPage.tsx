@@ -127,7 +127,7 @@ const ChatPage = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[calc(100vh-180px)]">
+        <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] sm:min-h-[calc(100vh-180px)]">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       </DashboardLayout>
@@ -136,25 +136,25 @@ const ChatPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex gap-6 h-[calc(100vh-180px)]">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 min-h-[calc(100vh-12rem)] sm:min-h-[calc(100vh-180px)]">
         {/* Chat area */}
-        <Card variant="glass-solid" className="flex-1 flex flex-col">
+        <Card variant="glass-solid" className="flex-1 flex flex-col min-h-0">
           {/* Header */}
-          <div className="p-4 border-b border-border/30 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Hash className="w-5 h-5 text-muted-foreground" />
-              <h2 className="font-display font-semibold">Workspace Chat</h2>
+          <div className="p-3 md:p-4 border-b border-border/30 flex items-center justify-between gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <Hash className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+              <h2 className="font-display font-semibold truncate">Workspace Chat</h2>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <OnlineIndicator isOnline={isConnected} />
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
                 {isConnected ? "Connected" : "Disconnected"}
               </span>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 p-6 overflow-y-auto space-y-6">
+          <div className="flex-1 p-4 md:p-6 overflow-y-auto space-y-6 min-h-0">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <p className="text-muted-foreground">
@@ -220,10 +220,10 @@ const ChatPage = () => {
           </div>
 
           {/* Input */}
-          <div className="p-4 border-t border-border/30">
+          <div className="p-3 md:p-4 border-t border-border/30 flex-shrink-0">
             <form
               onSubmit={handleSendMessage}
-              className="flex items-center gap-3"
+              className="flex items-center gap-2 sm:gap-3"
             >
               <Button
                 type="button"
@@ -258,7 +258,7 @@ const ChatPage = () => {
           </div>
         </Card>
 
-        <Card variant="glass-solid" className="w-80 p-4 overflow-y-auto">
+        <Card variant="glass-solid" className="hidden lg:flex lg:w-80 flex-shrink-0 p-4 overflow-y-auto">
           {workspaceId && <OnlineUsersList workspaceId={workspaceId} />}
         </Card>
         

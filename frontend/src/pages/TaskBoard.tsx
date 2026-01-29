@@ -304,7 +304,7 @@ const TaskBoard = () => {
 
   return (
     <DashboardLayout>
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link to={`/workspaces/${workspaceId}`}>
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -312,17 +312,17 @@ const TaskBoard = () => {
           </Link>
         </Button>
 
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1 sm:mb-2">
               Task Board
             </h1>
-            <p className="text-muted-foreground">{workspace.name}</p>
+            <p className="text-muted-foreground text-sm sm:text-base truncate">{workspace.name}</p>
           </div>
 
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="w-full sm:w-auto flex-shrink-0">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Task
               </Button>

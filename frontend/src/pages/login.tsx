@@ -62,21 +62,21 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-hero-gradient px-6 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-hero-gradient px-4 sm:px-6 py-8 sm:py-12">
       <div className="w-full max-w-3xl">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Logo />
-          <div>
-            <span className="text-sm text-muted-foreground mr-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted-foreground">
               New here?
             </span>
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" size="sm" asChild>
               <Link to="/signup">Create account</Link>
             </Button>
           </div>
         </div>
 
-        <Card className="p-8">
+        <Card className="p-4 sm:p-6 md:p-8">
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4">
               <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground">
